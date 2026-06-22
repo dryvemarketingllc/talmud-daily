@@ -936,19 +936,19 @@
   }
   .founding-band .fb-cta:hover { background: var(--sage); color: var(--ink); }
 
-  /* AMBASSADORS — host committee grid */
+  /* AMBASSADORS — host committee grid (compact: 2 rows × 6 cols) */
   .ambassadors .amb-grid {
-    margin-top: 40px;
+    margin-top: 32px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 36px 28px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 28px 18px;
   }
   .amb-card { text-align: left; }
   .amb-photo {
     aspect-ratio: 1 / 1;
     background: var(--paper-pure);
     border: 1px solid var(--rule);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -957,7 +957,7 @@
   }
   .amb-photo .initials {
     font-family: var(--serif);
-    font-size: 56px;
+    font-size: 36px;
     color: var(--burgundy);
     font-style: italic;
     opacity: 0.55;
@@ -965,17 +965,17 @@
   .amb-photo img { width: 100%; height: 100%; object-fit: cover; }
   .amb-name {
     font-family: var(--serif);
-    font-size: 22px;
+    font-size: 17px;
     color: var(--ink);
-    line-height: 1.15;
-    margin-bottom: 6px;
+    line-height: 1.2;
+    margin-bottom: 4px;
   }
   .amb-affil {
     font-family: var(--sans);
-    font-size: 12px;
+    font-size: 11px;
     color: var(--muted);
-    letter-spacing: 0.04em;
-    line-height: 1.4;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
   }
 
   /* FAQ — accordion using <details>/<summary> */
@@ -1161,7 +1161,7 @@
     .rhythm-intro, .sample-grid { grid-template-columns: 1fr; gap: 32px; }
     .sample-photo { min-height: 320px; }
     .rhythm-photo { min-height: 240px; }
-    .ambassadors .amb-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 20px; }
+    .ambassadors .amb-grid { grid-template-columns: repeat(3, 1fr); gap: 24px 14px; }
     .founding-band .inner { grid-template-columns: 1fr; gap: 28px; padding: 40px 24px; }
     .founding-band .fb-headline { font-size: 30px; }
     .video-card .play-btn { width: 72px; height: 72px; }
