@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Talmud Daily</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A 40-week, free, daily journey into the heart of Judaism. Ten minutes a day. Starts August 24, 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Final Talmud Daily brand */
+    --ink: #172020;
+    --ink-soft: #2A2A2A;
+    --paper: #EAE2D0;          /* brand cream — primary canvas */
+    --paper-pure: #F2EDDF;     /* slightly lighter cream for layered surfaces */
+    --burgundy: #500E0F;
+    --sage: #A7A885;
+    --muted: #5E5C50;
+    --rule: #C9BFA6;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+    --sans: "Hind", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.55;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* MOCKUP NOTE */
+  .mockup-tag {
+    position: fixed;
+    bottom: 12px; left: 12px;
+    background: var(--burgundy);
+    color: var(--paper);
+    padding: 6px 10px;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 100;
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  /* WORDMARK — Talmud Daily logo (SVG) */
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .wordmark img { display: block; height: 28px; width: auto; }
+  .wordmark.lg img { height: 64px; }
+  .wordmark.xl img { height: 100px; }
+
+  /* TD monogram (icon) */
+  .monogram { display: inline-block; line-height: 0; }
+  .monogram img { display: block; height: 28px; width: auto; }
+
+  /* NAV */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(245,241,232,0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.top .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav.top .links { display: flex; gap: 32px; align-items: center; font-size: 14px; font-family: var(--sans); }
+  nav.top .links a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+  nav.top .links a:hover { color: var(--burgundy); }
+  .btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 22px;
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    border-radius: 1px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: var(--burgundy); }
+  .btn-lg { padding: 18px 32px; font-size: 16px; }
+  .btn-xl { padding: 22px 40px; font-size: 17px; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+  /* Buttons inside the burgundy hero/CTA bands */
+  .hero .btn, .final-cta .btn {
+    background: var(--paper);
+    color: var(--burgundy);
+  }
+  .hero .btn:hover, .final-cta .btn:hover {
+    background: var(--sage);
+    color: var(--ink);
+  }
+  .hero .btn-ghost, .final-cta .btn-ghost {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid var(--sage);
+  }
+  .hero .btn-ghost:hover, .final-cta .btn-ghost:hover {
+    background: var(--sage);
+    color: var(--ink);
+    border-color: var(--sage);
+  }
+
+  /* HERO — full-bleed burgundy band */
+  .hero {
+    background: var(--burgundy);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+    padding: 96px 0 96px;
+  }
+  .hero::before {
+    /* TD monogram watermark, far right */
+    content: "";
+    position: absolute;
+    right: -120px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 720px; height: 880px;
+    background: url("tdbrand/monogram-cream.svg") no-repeat center/contain;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 64px;
+    align-items: center;
+  }
+  .hero-text { min-width: 0; }
+  .hero-video-wrap { min-width: 0; }
+
+  /* Promo video card — placeholder for now */
+  .video-card {
+    width: 100%;
+    min-height: 380px;
+    background: #2A0708 url("tdbrand/monogram-cream.svg") no-repeat center/45% auto;
+    background-blend-mode: normal;
+    border: 1px solid rgba(167,168,133,0.25);
+    overflow: hidden;
+    cursor: pointer;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: 32px;
+    position: relative;
+  }
+  .video-card .play-btn {
+    justify-self: center;
+    align-self: center;
+    width: 92px; height: 92px;
+    background: var(--paper);
+    border-radius: 50%;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--burgundy);
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    margin: auto;
+  }
+  .video-card .play-btn:hover {
+    transform: scale(1.06);
+    background: var(--sage);
+    color: var(--ink);
+  }
+  .video-card .play-btn svg { width: 30px; height: 30px; margin-left: 6px; }
+  .video-card .video-foot {
+    align-self: end;
+  }
+  .video-card .video-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .video-card .video-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--paper);
+    line-height: 1.25;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--sage);
+    margin-bottom: 32px;
+  }
+  h1.hero-h {
+    font-family: var(--serif);
+    font-size: clamp(46px, 5vw, 78px);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.012em;
+    color: var(--paper);
+    margin-bottom: 28px;
+  }
+  h1.hero-h em { font-style: italic; }
+  .hero-sub {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--paper);
+    opacity: 0.92;
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+  .hero-cta {
+    display: flex; gap: 14px; align-items: center;
+    flex-wrap: wrap;
+  }
+  .hero-secondary {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--sage);
+    margin-top: 22px;
+  }
+  .hero-secondary a {
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--sage);
+    padding-bottom: 1px;
+  }
+
+  /* SIGN-UP MODAL */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(23, 32, 32, 0.78);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(4px);
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-card {
+    background: var(--paper);
+    width: 100%;
+    max-width: 540px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 56px 48px 44px;
+    position: relative;
+    border-radius: 2px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sans);
+  }
+  .modal-close::before {
+    content: "";
+    width: 16px; height: 1.5px;
+    background: var(--ink);
+    transform: rotate(45deg);
+    position: absolute;
+  }
+  .modal-close::after {
+    content: "";
+    width: 16px; height: 1.5px;
+    background: var(--ink);
+    transform: rotate(-45deg);
+    position: absolute;
+  }
+  .modal-eyebrow {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--burgundy);
+    margin-bottom: 14px;
+  }
+  .modal-title {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .modal-sub {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 32px;
+  }
+  .modal-form { display: flex; flex-direction: column; gap: 14px; }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .modal-field label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .modal-field input,
+  .modal-field select {
+    font-family: var(--sans);
+    font-size: 15px;
+    padding: 13px 14px;
+    border: 1px solid var(--rule);
+    background: var(--paper-pure);
+    color: var(--ink);
+    border-radius: 1px;
+  }
+  .modal-field select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23500E0F' stroke-width='1.4' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+  .modal-field input:focus,
+  .modal-field select:focus {
+    outline: none;
+    border-color: var(--ink);
+  }
+  .modal-field .hint {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .modal-checks {
+    margin: 10px 0 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .modal-checks label {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    align-items: start;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    line-height: 1.45;
+  }
+  .modal-checks input[type=checkbox] {
+    margin-top: 2px;
+    accent-color: var(--burgundy);
+    width: 16px;
+    height: 16px;
+  }
+  .modal-submit {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 24px;
+    border: none;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 1px;
+    margin-top: 10px;
+  }
+  .modal-submit:hover { background: var(--burgundy); }
+  .modal-footnote {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  @media (max-width: 540px) {
+    .modal-card { padding: 44px 28px 36px; }
+    .modal-title { font-size: 28px; }
+    .modal-row { grid-template-columns: 1fr; }
+  }
+  .hero-meta {
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(167,168,133,0.4);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .hero-meta .k {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .hero-meta .v {
+    font-family: var(--serif);
+    font-size: 26px;
+    color: var(--paper);
+    font-weight: 400;
+    line-height: 1.05;
+  }
+
+  /* SECTION */
+  .s {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 64px 48px;
+  }
+  .s.narrow { max-width: 880px; }
+  .s.wide { max-width: 1400px; }
+  .section-eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--burgundy);
+    margin-bottom: 28px;
+  }
+  h2.section-h {
+    font-family: var(--serif);
+    font-size: clamp(40px, 4.6vw, 60px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin-bottom: 28px;
+    max-width: 32ch;
+  }
+  h2.section-h em { font-style: italic; font-weight: 400; }
+  p.section-lede {
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 68ch;
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+  p.section-body {
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin-bottom: 18px;
+  }
+
+  /* THE OFFER */
+  .offer {
+    background: var(--paper-pure);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .offer .inner { max-width: 1240px; margin: 0 auto; padding: 96px 48px; }
+  .offer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 80px;
+    margin-top: 48px;
+  }
+  .offer-item {
+    display: flex;
+    gap: 28px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .offer-item:nth-last-child(-n+2) { border-bottom: none; }
+  .offer-num {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--burgundy);
+    letter-spacing: 0.12em;
+    padding-top: 6px;
+    min-width: 36px;
+  }
+  .offer-text {
+    font-family: var(--serif);
+    font-size: 26px;
+    line-height: 1.3;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* WHAT IT IS */
+  .what-it-is { padding: 96px 48px 64px; max-width: 880px; margin: 0 auto; }
+
+  /* THE ARC */
+  .arc-row {
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 28px 36px;
+    border-radius: 1px;
+    margin: 40px 0;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  .arc-row.finale {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    margin-top: 32px;
+    margin-bottom: 0;
+  }
+  .arc-label {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--burgundy);
+  }
+  .arc-row.finale .arc-label { color: var(--sage); }
+  .arc-body {
+    font-family: var(--sans);
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .arc-row.finale .arc-body { color: var(--paper); }
+  .sedarim-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin: 32px 0;
+  }
+  .seder {
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 24px 20px;
+    border-radius: 1px;
+  }
+  .seder-h {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+  }
+  .seder-name {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .seder-translation {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-top: 6px;
+  }
+  .tractates {
+    list-style: none;
+  }
+  .tractates li {
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--ink-soft);
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--rule);
+    line-height: 1.3;
+    font-weight: 400;
+  }
+  .tractates li:last-child { border-bottom: none; }
+
+  /* THE RHYTHM */
+  .rhythm-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin: 48px 0 24px;
+  }
+  .day {
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 26px 18px;
+    text-align: center;
+    border-radius: 1px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .day .name {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .day .label {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .day .duration {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .day.rest {
+    background: transparent;
+    border: 1px dashed var(--rule);
+  }
+  .day.rest .label { color: var(--muted); font-style: italic; }
+  .day.weekly {
+    background: var(--burgundy);
+    color: var(--paper);
+    border-color: var(--burgundy);
+  }
+  .day.weekly .name { color: rgba(245,241,232,0.65); }
+  .day.weekly .label { color: var(--paper); }
+  .day.weekly .duration { color: rgba(245,241,232,0.7); }
+  .rhythm-note {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 16px;
+    font-style: italic;
+  }
+
+  /* SECTION with side photo (text + image two-column) */
+  .s.with-photo .s-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: start;
+  }
+  .s.with-photo .s-text { min-width: 0; }
+  .s.with-photo .s-photo {
+    width: 100%;
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    overflow: hidden;
+    line-height: 0;
+  }
+  .s.with-photo .s-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+  .s.with-photo.photo-left .s-text { order: 2; }
+  .s.with-photo.photo-left .s-photo { order: 1; }
+
+  /* Rhythm — intro row with text + side photo (photo stretches to match text height) */
+  .rhythm-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: stretch;
+    margin-bottom: 40px;
+  }
+  .rhythm-text { min-width: 0; }
+  .rhythm-photo { min-width: 0; line-height: 0; overflow: hidden; min-height: 280px; }
+  .rhythm-photo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Sample audio — full 2-column: text + player + episodes on left, photo runs full height on right */
+  .sample-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: stretch;
+  }
+  .sample-main { min-width: 0; }
+  .sample-photo { min-width: 0; line-height: 0; overflow: hidden; min-height: 480px; }
+  .sample-photo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    filter: brightness(0.92) saturate(0.85);
+  }
+
+  /* SAMPLE AUDIO */
+  .sample-block {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .sample-block .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 72px 48px;
+  }
+  .sample-block .section-eyebrow { color: var(--sage); }
+  .sample-block h2.section-h { color: var(--paper); max-width: 20ch; }
+  .sample-block p.section-lede { color: rgba(234,226,208,0.78); }
+  .player {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 1px;
+    padding: 28px 32px;
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .player .play {
+    width: 64px; height: 64px;
+    background: var(--paper); color: var(--burgundy);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    border: none;
+  }
+  .player .play svg { width: 22px; height: 22px; margin-left: 3px; }
+  .player .info .day-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .player .info .title {
+    font-family: var(--serif);
+    font-size: 26px;
+    color: var(--paper);
+    font-weight: 400;
+    margin-bottom: 14px;
+  }
+  .player .info .progress {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: rgba(234,226,208,0.6);
+  }
+  .player .info .bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .player .info .bar::after {
+    content: "";
+    display: block;
+    width: 28%;
+    height: 100%;
+    background: var(--sage);
+  }
+  .player .meta-right {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(234,226,208,0.65);
+    font-weight: 600;
+    text-align: right;
+    line-height: 1.6;
+  }
+  .episode-list {
+    margin-top: 56px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .episode-list .ep {
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: grid;
+    grid-template-columns: 90px 1fr auto auto;
+    gap: 28px;
+    align-items: center;
+    font-family: var(--sans);
+    color: rgba(234,226,208,0.78);
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .episode-list .ep:hover { background: rgba(255,255,255,0.02); }
+  .episode-list .ep .day-no { font-family: var(--serif); color: var(--sage); font-style: italic; font-size: 16px; }
+  .episode-list .ep .ep-title { color: var(--paper); font-family: var(--serif); font-size: 18px; }
+  .episode-list .ep .dur { font-size: 12px; letter-spacing: 0.1em; color: rgba(234,226,208,0.55); }
+  .episode-list .ep .mini-play {
+    width: 28px; height: 28px;
+    background: transparent;
+    color: var(--sage);
+    border: 1px solid rgba(167,168,133,0.5);
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .episode-list .ep .mini-play svg { width: 10px; height: 10px; margin-left: 2px; }
+
+  /* FOUNDING 100 — full-bleed burgundy interstitial band */
+  .founding-band {
+    background: var(--burgundy);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .founding-band .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 56px 48px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.4fr) auto;
+    align-items: center;
+    gap: 48px;
+  }
+  .founding-band .fb-visual {
+    aspect-ratio: 4 / 3;
+    background: #3D0A0B;
+    border: 1px solid rgba(167,168,133,0.25);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .founding-band .fb-visual svg { width: 86%; height: auto; }
+  .founding-band .fb-text { min-width: 0; }
+  .founding-band .fb-kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .founding-band .fb-headline {
+    font-family: var(--serif);
+    font-size: 36px;
+    line-height: 1.05;
+    color: var(--paper);
+    margin-bottom: 14px;
+  }
+  .founding-band .fb-headline em { font-style: italic; }
+  .founding-band .fb-body {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.45;
+    color: var(--paper);
+    opacity: 0.92;
+  }
+  .founding-band .fb-body em { font-style: italic; }
+  .founding-band .fb-body a {
+    color: var(--paper);
+    text-decoration: none;
+    border-bottom: 1px solid var(--sage);
+  }
+  .founding-band .fb-body a:hover {
+    color: var(--sage);
+    border-bottom-color: var(--sage);
+  }
+  .founding-band .fb-cta {
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    background: var(--paper);
+    font-weight: 600;
+    border: none;
+    padding: 18px 28px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .founding-band .fb-cta:hover { background: var(--sage); color: var(--ink); }
+
+  /* AMBASSADORS — host committee grid */
+  .ambassadors .amb-grid {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 36px 28px;
+  }
+  .amb-card { text-align: left; }
+  .amb-photo {
+    aspect-ratio: 1 / 1;
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .amb-photo .initials {
+    font-family: var(--serif);
+    font-size: 56px;
+    color: var(--burgundy);
+    font-style: italic;
+    opacity: 0.55;
+  }
+  .amb-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .amb-name {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+  .amb-affil {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+
+  /* FAQ — accordion using <details>/<summary> */
+  .faq { background: var(--paper-pure); }
+  .faq-list {
+    margin-top: 36px;
+    border-top: 1px solid var(--rule);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--rule);
+  }
+  .faq-item > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 24px 56px 24px 0;
+    position: relative;
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--ink);
+    line-height: 1.3;
+    transition: color 0.15s;
+  }
+  .faq-item > summary::-webkit-details-marker { display: none; }
+  .faq-item > summary:hover { color: var(--burgundy); }
+  .faq-item > summary::after {
+    content: "+";
+    position: absolute;
+    right: 4px; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--serif);
+    font-size: 32px;
+    color: var(--burgundy);
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+  .faq-item[open] > summary::after {
+    content: "−";
+  }
+  .faq-item .a {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 0 56px 28px 0;
+  }
+  .faq-item .a a {
+    color: var(--burgundy);
+    text-decoration: none;
+    border-bottom: 1px solid var(--burgundy);
+  }
+  .faq-item .a a:hover {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+
+  /* FINAL CTA — burgundy band, matches hero/deck */
+  .final-cta {
+    background: var(--burgundy);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    /* TD monogram watermark, left edge */
+    content: "";
+    position: absolute;
+    left: -200px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 720px; height: 880px;
+    background: url("tdbrand/monogram-cream.svg") no-repeat center/contain;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+  .final-cta .inner {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 132px 48px;
+    text-align: center;
+    position: relative;
+  }
+  .final-cta .eyebrow { color: var(--sage); margin-bottom: 28px; }
+  .final-cta h2 {
+    font-family: var(--serif);
+    font-size: clamp(48px, 7vw, 84px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.015em;
+    margin-bottom: 32px;
+  }
+  .final-cta h2 em { font-style: italic; }
+  .final-cta p {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--paper);
+    opacity: 0.92;
+    max-width: 52ch;
+    margin: 0 auto 44px;
+  }
+  .modal-trigger-btn {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 22px 44px;
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+    transition: background 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .modal-trigger-btn:hover { background: var(--burgundy); color: var(--paper); }
+  .signup-form {
+    display: flex;
+    gap: 10px;
+    max-width: 560px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .signup-form input {
+    flex: 1;
+    min-width: 240px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: var(--paper);
+    padding: 18px 20px;
+    font-family: var(--sans);
+    font-size: 15px;
+    border-radius: 1px;
+  }
+  .signup-form input::placeholder { color: rgba(245,241,232,0.5); }
+  .signup-form button {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 18px 32px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+  }
+  .signup-form button:hover { background: var(--burgundy); color: var(--paper); }
+  .opt-in {
+    margin-top: 22px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: rgba(245,241,232,0.6);
+  }
+  .opt-in label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+
+  /* FOOTER */
+  footer.site {
+    background: var(--ink);
+    color: rgba(245,241,232,0.5);
+    padding: 64px 48px 48px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  footer.site .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: center;
+  }
+  footer.site .copyright { color: rgba(245,241,232,0.35); }
+
+  /* RESPONSIVE */
+  @media (max-width: 880px) {
+    nav.top .links a:not(.btn) { display: none; }
+    .hero { padding: 56px 0 64px; }
+    .hero-inner { padding: 0 24px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .s.with-photo .s-inner { grid-template-columns: 1fr; gap: 36px; }
+    .s.with-photo.photo-left .s-text { order: unset; }
+    .s.with-photo.photo-left .s-photo { order: unset; }
+    .rhythm-intro, .sample-grid { grid-template-columns: 1fr; gap: 32px; }
+    .sample-photo { min-height: 320px; }
+    .rhythm-photo { min-height: 240px; }
+    .ambassadors .amb-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 20px; }
+    .founding-band .inner { grid-template-columns: 1fr; gap: 28px; padding: 40px 24px; }
+    .founding-band .fb-headline { font-size: 30px; }
+    .video-card .play-btn { width: 72px; height: 72px; }
+    .video-card .play-btn svg { width: 24px; height: 24px; }
+    section.s, .offer .inner, .sample-block .inner, .final-cta .inner { padding-left: 24px; padding-right: 24px; }
+    .hero-meta { grid-template-columns: 1fr 1fr; }
+    .offer-grid { grid-template-columns: 1fr; gap: 0; }
+    .offer-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--rule); }
+    .offer-item:last-child { border-bottom: none; }
+    .sedarim-grid { grid-template-columns: 1fr 1fr; }
+    .rhythm-week { grid-template-columns: repeat(2, 1fr); }
+    .player { grid-template-columns: 56px 1fr; }
+    .player .meta-right { grid-column: 1 / -1; text-align: left; }
+    .founding-grid, .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .faq-item { grid-template-columns: 1fr; gap: 12px; }
+    .episode-list .ep { grid-template-columns: 60px 1fr; }
+    .episode-list .ep .dur { display: none; }
+    .arc-row { grid-template-columns: 1fr; gap: 8px; }
+    .wordmark.lg img { height: 44px; }
+    .wordmark.xl img { height: 64px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top">
+  <div class="inner">
+    <a class="wordmark" href="#" aria-label="Talmud Daily home">
+      <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
+    </a>
+    <div class="links">
+      <a href="#talmud">The Talmud</a>
+      <a href="#arc">The Journey</a>
+      <a href="#rhythm">How It Works</a>
+      <a href="#sample">Samples</a>
+      <a href="#ambassadors">Ambassadors</a>
+      <a href="#faq">FAQ</a>
+      <button type="button" class="btn" onclick="openSignup()">Sign up</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="eyebrow">Begins August 24, 2026</div>
+        <h1 class="hero-h">The first accessible journey into the <em>heart of Judaism</em>.</h1>
+        <p class="hero-sub">Forty weeks. Ten minutes of audio a day. No Hebrew required. A daily learning program for the rest of us — ending alongside the global Jewish world at Siyum HaShas.</p>
+        <div class="hero-cta">
+          <button type="button" class="btn btn-xl" onclick="openSignup()">Sign me up</button>
+          <a href="#sample" class="btn btn-ghost btn-xl">Listen to a sample</a>
+        </div>
+      </div>
+      <div class="hero-video-wrap">
+        <!-- Promo video placeholder — replace this <div> with an embedded video player or <iframe> when the cut is ready -->
+        <div class="video-card" role="button" aria-label="Play promo video">
+          <button class="play-btn" aria-label="Play">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+          </button>
+          <div class="video-foot">
+            <div class="video-label">Watch · 1:48</div>
+            <div class="video-title">A two-minute look at what Talmud Daily is.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div><div class="k">Launches</div><div class="v">Aug 24, 2026</div></div>
+      <div><div class="k">Culminates</div><div class="v">Jun 6, 2027</div></div>
+      <div><div class="k">Daily</div><div class="v">10 min audio · M–Th</div></div>
+      <div><div class="k">Cost</div><div class="v">Free</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- WHAT IS THE TALMUD -->
+<section class="s with-photo photo-left" id="talmud">
+  <div class="s-inner">
+    <div class="s-photo"><img src="tdbrand/photos/AdobeStock_490050963.jpg" alt="An open Talmud on a wooden stand"></div>
+    <div class="s-text">
+      <div class="section-eyebrow">What you're learning</div>
+      <h2 class="section-h">The Talmud, <em>briefly</em>.</h2>
+      <p class="section-body">The Talmud is the foundation of Jewish thought — a 1,500-year-old record of arguments, stories, laws, and ethical wrestling compiled by the rabbis who held Jewish life together after the destruction of the Second Temple.</p>
+      <p class="section-body">It's organized as 37 tractates, each one a different theme: prayer, marriage, holidays, business law, courtroom procedure, theology, even the rules of dreams. Every Jewish text written since — Rashi, Maimonides, the Shulchan Aruch, modern Jewish thought — leans on it.</p>
+      <p class="section-body">For most modern Jews, the Talmud has been a closed room. Talmud Daily opens it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- THE ARC -->
+<section class="s wide" id="arc">
+  <div class="section-eyebrow">The journey</div>
+  <h2 class="section-h">Forty weeks. <em>The whole Talmud.</em></h2>
+  <p class="section-lede">Three weeks of foundations, then 37 weeks — one tractate per week — through all six Sedarim, ending alongside the rest of the world at Siyum HaShas.</p>
+
+  <div class="arc-row">
+    <div class="arc-label">Weeks 1–3 · Foundations</div>
+    <div class="arc-body">What the Talmud is. How it was written. How to read a page.</div>
+  </div>
+
+  <div class="sedarim-grid">
+    <div class="seder"><div class="seder-h"><div class="seder-name">Zeraim</div><div class="seder-translation">Agriculture</div></div><ol class="tractates"><li>Brachos</li></ol></div>
+    <div class="seder"><div class="seder-h"><div class="seder-name">Moed</div><div class="seder-translation">Holidays</div></div><ol class="tractates"><li>Shabbos</li><li>Eruvin</li><li>Pesachim</li><li>Yoma</li><li>Sukkah</li><li>Beitzah</li><li>Rosh Hashanah</li><li>Taanis</li><li>Megillah</li><li>Moed Katan</li><li>Chagigah</li></ol></div>
+    <div class="seder"><div class="seder-h"><div class="seder-name">Nashim</div><div class="seder-translation">Family Law</div></div><ol class="tractates"><li>Yevamos</li><li>Kesubos</li><li>Nedarim</li><li>Nazir</li><li>Sotah</li><li>Gittin</li><li>Kiddushin</li></ol></div>
+    <div class="seder"><div class="seder-h"><div class="seder-name">Nezikin</div><div class="seder-translation">Damages</div></div><ol class="tractates"><li>Bava Kamma</li><li>Bava Metzia</li><li>Bava Basra</li><li>Sanhedrin</li><li>Makkos</li><li>Shevuos</li><li>Avodah Zarah</li><li>Horayos</li></ol></div>
+    <div class="seder"><div class="seder-h"><div class="seder-name">Kodashim</div><div class="seder-translation">Sacrifices</div></div><ol class="tractates"><li>Zevachim</li><li>Menachos</li><li>Chullin</li><li>Bechoros</li><li>Arachin</li><li>Temurah</li><li>Kerisos</li><li>Meilah</li><li>Tamid</li></ol></div>
+    <div class="seder"><div class="seder-h"><div class="seder-name">Tahoros</div><div class="seder-translation">Purity</div></div><ol class="tractates"><li>Niddah</li></ol></div>
+  </div>
+
+  <div class="arc-row finale">
+    <div class="arc-label">June 6, 2027</div>
+    <div class="arc-body">Siyum HaShas. The end of the journey, alongside Jews around the world.</div>
+  </div>
+</section>
+
+<!-- THE RHYTHM -->
+<section class="s" id="rhythm">
+  <div class="rhythm-intro">
+    <div class="rhythm-text">
+      <div class="section-eyebrow">How it works</div>
+      <h2 class="section-h">Ten minutes of audio a day. <em>That's the deal.</em></h2>
+      <p class="section-lede">Monday through Thursday, a short audio episode. Friday brings a longer interview with the best Talmud scholars and educators in the world. Weekends off. Jewish holidays paused.</p>
+    </div>
+    <div class="rhythm-photo"><img src="tdbrand/photos/AdobeStock_876599192.jpg" alt="A listener at the window"></div>
+  </div>
+  <div class="rhythm-week">
+    <div class="day"><div class="name">Mon</div><div class="label">Key Concepts</div><div class="duration">10 min</div></div>
+    <div class="day"><div class="name">Tue</div><div class="label">In Daily Life</div><div class="duration">10 min</div></div>
+    <div class="day"><div class="name">Wed</div><div class="label">A Story</div><div class="duration">10 min</div></div>
+    <div class="day"><div class="name">Thu</div><div class="label">In the World</div><div class="duration">10 min</div></div>
+    <div class="day weekly"><div class="name">Fri</div><div class="label">Voices</div><div class="duration">Long form</div></div>
+    <div class="day rest"><div class="name">Sat</div><div class="label">Off</div><div class="duration">Shabbos</div></div>
+    <div class="day rest"><div class="name">Sun</div><div class="label">Catch up</div><div class="duration">Your call</div></div>
+  </div>
+  <div class="rhythm-note">40 weeks total · ~200 days of learning · paused for major Jewish holidays</div>
+</section>
+
+<!-- SAMPLE AUDIO -->
+<section class="sample-block" id="sample">
+  <div class="inner">
+    <div class="sample-grid">
+      <div class="sample-main">
+        <div class="section-eyebrow">Hear it first</div>
+        <h2 class="section-h">Press play. <em>Right here.</em></h2>
+        <p class="section-lede">A few sample episodes to give you the voice, the cadence, the depth.</p>
+
+        <div class="player">
+          <button class="play" aria-label="Play">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+          </button>
+          <div class="info">
+            <div class="day-label">Sample episode</div>
+            <div class="title">Why the Talmud?</div>
+            <div class="progress">
+              <span>0:00</span><span class="bar"></span><span>10:14</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="episode-list">
+          <div class="ep"><span class="day-no">Sample 02</span><span class="ep-title">How a Page Works</span><span class="dur">9:48</span><span class="mini-play" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></span></div>
+          <div class="ep"><span class="day-no">Sample 03</span><span class="ep-title">When Two Rabbis Disagree</span><span class="dur">11:05</span><span class="mini-play" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></span></div>
+          <div class="ep"><span class="day-no">Sample 04</span><span class="ep-title">How to Listen In</span><span class="dur">9:32</span><span class="mini-play" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></span></div>
+        </div>
+      </div>
+      <div class="sample-photo"><img src="tdbrand/photos/AdobeStock_923661509.jpg" alt="A listener on the go"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDING 100 BAND — burgundy interstitial -->
+<section class="founding-band" id="founding">
+  <div class="inner">
+    <!-- Visual placeholder: stylized book + Gemara Card. Swap for a real product photo when available. -->
+    <div class="fb-visual">
+      <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" aria-label="The book and the Gemara Card">
+        <!-- soft surface shadow -->
+        <ellipse cx="170" cy="208" rx="130" ry="9" fill="#000" opacity="0.28"/>
+        <!-- BOOK -->
+        <g transform="translate(40, 38)">
+          <!-- back cover edge -->
+          <rect x="6" y="6" width="150" height="170" fill="#3D0A0B"/>
+          <!-- front cover -->
+          <rect x="0" y="0" width="150" height="170" fill="#EAE2D0"/>
+          <!-- title plate -->
+          <line x1="14" y1="32" x2="86" y2="32" stroke="#500E0F" stroke-width="1.2"/>
+          <text x="14" y="58" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#172020">How the</text>
+          <text x="14" y="79" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#172020">Talmud</text>
+          <text x="14" y="100" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#172020">Can Change</text>
+          <text x="14" y="121" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#172020">Your Life</text>
+          <line x1="14" y1="134" x2="60" y2="134" stroke="#500E0F" stroke-width="1"/>
+          <text x="14" y="152" font-family="Hind, Helvetica, sans-serif" font-size="8.5" letter-spacing="2.2" fill="#500E0F">LIEL LEIBOVITZ</text>
+        </g>
+        <!-- GEMARA CARD (overlapping bottom-right of book) -->
+        <g transform="translate(150, 110) rotate(8)">
+          <rect x="0" y="0" width="130" height="80" fill="#A7A885"/>
+          <rect x="0" y="0" width="130" height="80" fill="none" stroke="#172020" stroke-width="0.6" opacity="0.4"/>
+          <!-- card content lines -->
+          <text x="10" y="20" font-family="Hind, Helvetica, sans-serif" font-size="7" letter-spacing="1.8" fill="#172020" opacity="0.85">THE GEMARA CARD</text>
+          <line x1="10" y1="26" x2="120" y2="26" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
+          <line x1="10" y1="36" x2="118" y2="36" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
+          <line x1="10" y1="44" x2="120" y2="44" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
+          <line x1="10" y1="52" x2="115" y2="52" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
+          <line x1="10" y1="60" x2="120" y2="60" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
+          <line x1="10" y1="68" x2="100" y2="68" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
+        </g>
+      </svg>
+    </div>
+    <div class="fb-text">
+      <div class="fb-kicker">Founding 100 Perk</div>
+      <div class="fb-headline">Free book + Gemara Card.</div>
+      <div class="fb-body">The first 100 to sign up receive a copy of <em>How the Talmud Can Change Your Life</em> by Liel Leibovitz, plus a <a href="https://korenpub.com/products/the-gemara-card" target="_blank" rel="noopener">Koren Gemara Card</a> to start the journey.</div>
+    </div>
+    <button type="button" class="fb-cta" onclick="openSignup()">Claim a spot</button>
+  </div>
+</section>
+
+<!-- AMBASSADORS — host committee photos -->
+<section class="s ambassadors" id="ambassadors">
+  <div class="section-eyebrow">The host committee</div>
+  <h2 class="section-h">Joined by people <em>you trust</em>.</h2>
+  <p class="section-lede">Educators, writers, and community voices who are lending their names so this thing has more reach. More joining each week.</p>
+  <!-- Placeholder ambassadors — swap names / photos as they're confirmed -->
+  <div class="amb-grid">
+    <div class="amb-card">
+      <div class="amb-photo"><span class="initials">DB</span></div>
+      <div class="amb-name">Dovid Bashevkin</div>
+      <div class="amb-affil">Host · 18Forty</div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><span class="initials">LL</span></div>
+      <div class="amb-name">Liel Leibovitz</div>
+      <div class="amb-affil">Tablet Magazine</div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><span class="initials">YK</span></div>
+      <div class="amb-name">Yehuda Kurtzer</div>
+      <div class="amb-affil">Shalom Hartman Institute</div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><span class="initials">SH</span></div>
+      <div class="amb-name">Sarah Hurwitz</div>
+      <div class="amb-affil">Author, Here All Along</div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><span class="initials">DH</span></div>
+      <div class="amb-name">Dara Horn</div>
+      <div class="amb-affil">Author, People Love Dead Jews</div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><span class="initials">EB</span></div>
+      <div class="amb-name">Erica Brown</div>
+      <div class="amb-affil">George Washington University</div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><span class="initials">MO</span></div>
+      <div class="amb-name">Meir Soloveichik</div>
+      <div class="amb-affil">Straus Center, Yeshiva University</div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><span class="initials">+</span></div>
+      <div class="amb-name">More joining each week</div>
+      <div class="amb-affil">&nbsp;</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="s">
+    <div class="section-eyebrow">Questions you might have</div>
+    <h2 class="section-h">Before you sign up.</h2>
+    <div class="faq-list">
+      <details class="faq-item" open>
+        <summary>Is this really free?</summary>
+        <div class="a">Yes. No payment, no paywall. Learners receive discount codes for partner Jewish-publishing books along the way.</div>
+      </details>
+      <details class="faq-item">
+        <summary>What's the actual format?</summary>
+        <div class="a">A ten-minute audio episode Monday through Thursday, one longer Friday interview, weekends off. Jewish holidays paused.</div>
+      </details>
+      <details class="faq-item">
+        <summary>How will I receive it?</summary>
+        <div class="a">A daily email with that day's episode, plus the audio on Apple Podcasts, Spotify, and on this site. Pick whichever fits your day.</div>
+      </details>
+      <details class="faq-item">
+        <summary>What if I miss a day?</summary>
+        <div class="a">Catch up over the weekend. The streak is private; the journey is the point.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Do I need to read Hebrew?</summary>
+        <div class="a">No.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Is this religious?</summary>
+        <div class="a">It's Jewish literacy. The Talmud is the foundation. How you engage is yours.</div>
+      </details>
+      <details class="faq-item">
+        <summary>How is this different from Daf Yomi?</summary>
+        <div class="a">Daf Yomi is one page of Talmud a day for 7.5 years, in Hebrew and Aramaic. Talmud Daily is the bigger ideas, in English, in forty weeks.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Who's running it?</summary>
+        <div class="a"><a href="https://18forty.org" target="_blank" rel="noopener">18Forty</a>, led by Dovid Bashevkin. Open to everyone, every denomination.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Will you spam me?</summary>
+        <div class="a">No. Unsubscribe anytime.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="signup">
+  <div class="inner">
+    <div class="eyebrow">Begins August 24, 2026</div>
+    <h2>Be part of <em>it.</em></h2>
+    <p>Forty weeks of learning, delivered daily, beginning August 24. The first 100 to sign up become Founding Learners.</p>
+    <button type="button" class="modal-trigger-btn" onclick="openSignup()">Sign me up</button>
+  </div>
+</section>
+
+<!-- SIGN-UP MODAL -->
+<div class="modal-backdrop" id="signupModal" onclick="if(event.target===this) closeSignup()">
+  <div class="modal-card">
+    <button class="modal-close" aria-label="Close" onclick="closeSignup()"></button>
+    <div class="modal-eyebrow">Join Talmud Daily</div>
+    <h3 class="modal-title">Add your name.</h3>
+    <p class="modal-sub">Forty weeks, starting August 24, 2026. Free.</p>
+    <form class="modal-form" onsubmit="event.preventDefault(); alert('Mockup — would submit to email platform.'); closeSignup();">
+      <div class="modal-row">
+        <div class="modal-field">
+          <label for="fn">First name</label>
+          <input id="fn" type="text" required>
+        </div>
+        <div class="modal-field">
+          <label for="ln">Last name</label>
+          <input id="ln" type="text" required>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label for="em">Email</label>
+        <input id="em" type="email" required>
+      </div>
+      <div class="modal-field">
+        <label for="city">City <span style="text-transform:none; letter-spacing:0; color:var(--muted); font-weight:400; font-size:11px;">(optional)</span></label>
+        <input id="city" type="text" placeholder="Where are you doing this from?">
+      </div>
+      <div class="modal-field">
+        <label for="src">How did you hear about Talmud Daily? <span style="text-transform:none; letter-spacing:0; color:var(--muted); font-weight:400; font-size:11px;">(optional)</span></label>
+        <select id="src" name="src">
+          <option value="" selected>Pick one…</option>
+          <option value="friend">A friend or family member</option>
+          <option value="ambassador">A Talmud Daily ambassador</option>
+          <option value="18forty">18Forty (podcast or site)</option>
+          <option value="podcast">Another podcast</option>
+          <option value="social">Social media</option>
+          <option value="newsletter">A newsletter or publication</option>
+          <option value="event">An event or shul</option>
+          <option value="search">Google or search</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <button class="modal-submit" type="submit">Sign me up</button>
+      <p class="modal-footnote">No payment, no paywall. Unsubscribe anytime.</p>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openSignup() {
+    document.getElementById('signupModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSignup() {
+    document.getElementById('signupModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSignup(); });
+</script>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="inner">
+    <a class="wordmark" href="#" aria-label="Talmud Daily home">
+      <img src="tdbrand/wordmark-cream.svg" alt="Talmud Daily">
+    </a>
+    <span>A project of 18Forty · A programmatic division of the OU</span>
+    <span class="copyright">© 2026 18Forty</span>
+  </div>
+</footer>
+
+</body>
+</html>
