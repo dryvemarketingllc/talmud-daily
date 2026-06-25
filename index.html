@@ -691,6 +691,18 @@
     margin-top: 16px;
     font-style: italic;
   }
+  .rhythm-callout {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink);
+    text-align: center;
+    margin-top: 24px;
+    line-height: 1.4;
+    max-width: 56ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .rhythm-callout em { font-style: italic; color: var(--burgundy); }
 
   /* SECTION with side photo (text + image two-column) */
   .s.with-photo .s-inner {
@@ -1212,7 +1224,7 @@
       <div class="hero-text">
         <div class="eyebrow">Begins August 24, 2026</div>
         <h1 class="hero-h">The first accessible journey into the <em>heart of Judaism</em>.</h1>
-        <p class="hero-sub">Forty weeks. Four days a week. Ten minutes of audio a day. No Hebrew required. A daily learning program for the rest of us — ending alongside the global Jewish world at Siyum HaShas.</p>
+        <p class="hero-sub">Forty weeks. Ten minutes Monday through Thursday — plus a longer Friday interview if you want to go deeper. No Hebrew required. A daily learning program for the rest of us — ending alongside the global Jewish world at Siyum HaShas.</p>
         <div class="hero-cta">
           <button type="button" class="btn btn-xl" onclick="openSignup()">Sign me up</button>
           <a href="#sample" class="btn btn-ghost btn-xl">Listen to a sample</a>
@@ -1299,7 +1311,8 @@
     <div class="day rest"><div class="name">Sat</div><div class="label">Off</div><div class="duration">Shabbos</div></div>
     <div class="day rest"><div class="name">Sun</div><div class="label">Catch up</div><div class="duration">Your call</div></div>
   </div>
-  <div class="rhythm-note">40 weeks total · ~200 days of learning · paused for major Jewish holidays</div>
+  <p class="rhythm-callout">Mon–Thu is the <em>core daily commitment</em>. Friday is a bonus deep-dive for whoever wants it.</p>
+  <div class="rhythm-note">40 weeks total · ~160 daily episodes · paused for major Jewish holidays</div>
 </section>
 
 <!-- SAMPLE AUDIO -->
@@ -1464,7 +1477,7 @@
       </details>
       <details class="faq-item">
         <summary>What's the actual format?</summary>
-        <div class="a">A ten-minute audio episode Monday through Thursday, one longer Friday interview, weekends off. Jewish holidays paused.</div>
+        <div class="a">A ten-minute audio episode Monday through Thursday, plus a longer Friday interview for whoever wants it. Weekends off. Jewish holidays paused.</div>
       </details>
       <details class="faq-item">
         <summary>How will I receive it?</summary>
