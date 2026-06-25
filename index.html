@@ -892,11 +892,15 @@
     aspect-ratio: 4 / 3;
     background: #3D0A0B;
     border: 1px solid rgba(167,168,133,0.25);
-    display: flex; align-items: center; justify-content: center;
     overflow: hidden;
     position: relative;
+    line-height: 0;
   }
-  .founding-band .fb-visual svg { width: 86%; height: auto; }
+  .founding-band .fb-visual img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
   .founding-band .fb-text { min-width: 0; }
   .founding-band .fb-kicker {
     font-family: var(--sans);
@@ -1351,40 +1355,8 @@
 <!-- FOUNDING 100 BAND — burgundy interstitial -->
 <section class="founding-band" id="founding">
   <div class="inner">
-    <!-- Visual placeholder: stylized book + Gemara Card. Swap for a real product photo when available. -->
     <div class="fb-visual">
-      <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" aria-label="The book and the Gemara Card">
-        <!-- soft surface shadow -->
-        <ellipse cx="170" cy="208" rx="130" ry="9" fill="#000" opacity="0.28"/>
-        <!-- BOOK -->
-        <g transform="translate(40, 38)">
-          <!-- back cover edge -->
-          <rect x="6" y="6" width="150" height="170" fill="#3D0A0B"/>
-          <!-- front cover -->
-          <rect x="0" y="0" width="150" height="170" fill="#EAE2D0"/>
-          <!-- title plate -->
-          <line x1="14" y1="32" x2="86" y2="32" stroke="#500E0F" stroke-width="1.2"/>
-          <text x="14" y="58" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#172020">How the</text>
-          <text x="14" y="79" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#172020">Talmud</text>
-          <text x="14" y="100" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#172020">Can Change</text>
-          <text x="14" y="121" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#172020">Your Life</text>
-          <line x1="14" y1="134" x2="60" y2="134" stroke="#500E0F" stroke-width="1"/>
-          <text x="14" y="152" font-family="Hind, Helvetica, sans-serif" font-size="8.5" letter-spacing="2.2" fill="#500E0F">LIEL LEIBOVITZ</text>
-        </g>
-        <!-- GEMARA CARD (overlapping bottom-right of book) -->
-        <g transform="translate(150, 110) rotate(8)">
-          <rect x="0" y="0" width="130" height="80" fill="#A7A885"/>
-          <rect x="0" y="0" width="130" height="80" fill="none" stroke="#172020" stroke-width="0.6" opacity="0.4"/>
-          <!-- card content lines -->
-          <text x="10" y="20" font-family="Hind, Helvetica, sans-serif" font-size="7" letter-spacing="1.8" fill="#172020" opacity="0.85">THE GEMARA CARD</text>
-          <line x1="10" y1="26" x2="120" y2="26" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
-          <line x1="10" y1="36" x2="118" y2="36" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
-          <line x1="10" y1="44" x2="120" y2="44" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
-          <line x1="10" y1="52" x2="115" y2="52" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
-          <line x1="10" y1="60" x2="120" y2="60" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
-          <line x1="10" y1="68" x2="100" y2="68" stroke="#172020" stroke-width="0.4" opacity="0.3"/>
-        </g>
-      </svg>
+      <img src="tdbrand/photos/founding-perk.jpg" alt="How the Talmud Can Change Your Life by Liel Leibovitz, with the Koren Gemara Card">
     </div>
     <div class="fb-text">
       <div class="fb-kicker">Founding 100 Perk</div>
