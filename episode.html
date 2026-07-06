@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 7: Bread and the Meaning of Blessing — Talmud Daily</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Hind:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #172020;
+    --ink-soft: #2A2A2A;
+    --paper: #EAE2D0;
+    --paper-pure: #F2EDDF;
+    --burgundy: #500E0F;
+    --burgundy-deep: #3D0A0B;
+    --sage: #A7A885;
+    --muted: #5E5C50;
+    --rule: #C9BFA6;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+    --hebrew: "Frank Ruhl Libre", "David", "SBL Hebrew", Georgia, serif;
+    --sans: "Hind", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.55;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* MOCKUP TAG */
+  .mockup-tag {
+    position: fixed;
+    bottom: 12px; left: 12px;
+    background: var(--burgundy);
+    color: var(--paper);
+    padding: 6px 10px;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 100;
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  /* WORDMARK */
+  .wordmark { display: inline-flex; align-items: center; text-decoration: none; line-height: 1; }
+  .wordmark img { display: block; height: 28px; width: auto; }
+
+  /* NAV */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(234,226,208,0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.top .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav.top .links { display: flex; gap: 30px; align-items: center; font-size: 14px; font-family: var(--sans); }
+  nav.top .links a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+  nav.top .links a:hover { color: var(--burgundy); }
+  nav.top .links a.active { color: var(--burgundy); border-bottom: 1px solid var(--burgundy); padding-bottom: 2px; }
+
+  /* CONTEXT STRIP — above the title */
+  .context {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 48px 48px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .context .breadcrumbs {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+  }
+  .context .breadcrumbs .sep { color: var(--muted); margin: 0 10px; font-weight: 400; }
+  .context .progress {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .context .progress em { color: var(--burgundy); font-style: normal; font-weight: 700; }
+
+  /* TITLE BAND */
+  .title-band {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 8px 48px 40px;
+  }
+  h1.episode-h {
+    font-family: var(--serif);
+    font-size: clamp(38px, 4.6vw, 60px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 22px;
+    max-width: 40ch;
+  }
+  h1.episode-h em { font-style: italic; }
+  .episode-meta {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .episode-meta .item { display: flex; align-items: center; gap: 8px; }
+  .episode-meta .item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--burgundy); display: inline-block; }
+  .episode-meta strong { color: var(--ink); font-weight: 500; }
+
+  /* PLAYER BAND */
+  .player-band {
+    background: var(--burgundy);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+    padding: 48px 0;
+  }
+  .player-band::before {
+    content: "";
+    position: absolute;
+    right: -100px; top: 50%;
+    transform: translateY(-50%);
+    width: 640px; height: 780px;
+    background: url("tdbrand/monogram-cream.svg") no-repeat center/contain;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+  .player-inner {
+    position: relative; z-index: 1;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+  .format-toggle {
+    display: inline-flex;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(167,168,133,0.3);
+    padding: 4px;
+    border-radius: 2px;
+  }
+  .format-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .format-toggle button {
+    background: transparent;
+    color: var(--paper);
+    border: none;
+    padding: 8px 20px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 1px;
+    opacity: 0.7;
+  }
+  .format-toggle button.active {
+    background: var(--paper);
+    color: var(--burgundy);
+    opacity: 1;
+  }
+  .format-toggle button:hover:not(.active) { opacity: 1; }
+  .format-toggle button svg { width: 12px; height: 12px; margin-right: 8px; vertical-align: -2px; }
+
+  /* VIDEO PLAYER */
+  .video-stage {
+    width: 100%;
+    min-height: 480px;
+    background: var(--burgundy-deep) url("tdbrand/monogram-cream.svg") no-repeat center/34% auto;
+    border: 1px solid rgba(167,168,133,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+  }
+  .video-stage .play-hero {
+    width: 108px; height: 108px;
+    background: var(--paper);
+    border-radius: 50%;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--burgundy);
+    cursor: pointer;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+    transition: transform 0.2s;
+  }
+  .video-stage .play-hero:hover { transform: scale(1.06); }
+  .video-stage .play-hero svg { width: 36px; height: 36px; margin-left: 6px; }
+  .video-stage .video-label {
+    position: absolute;
+    left: 32px; bottom: 26px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+  }
+
+  /* AUDIO PLAYER */
+  .audio-stage {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(167,168,133,0.2);
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 88px 1fr auto;
+    gap: 32px;
+    align-items: center;
+  }
+  .audio-stage .play-audio {
+    width: 88px; height: 88px;
+    background: var(--paper);
+    color: var(--burgundy);
+    border-radius: 50%;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+  }
+  .audio-stage .play-audio:hover { transform: scale(1.05); }
+  .audio-stage .play-audio svg { width: 28px; height: 28px; margin-left: 4px; }
+  .audio-stage .info { min-width: 0; }
+  .audio-stage .info .label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .audio-stage .info .track {
+    font-family: var(--serif);
+    font-size: 26px;
+    color: var(--paper);
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .audio-stage .info .progress {
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: rgba(234,226,208,0.65);
+  }
+  .audio-stage .info .bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.14);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .audio-stage .info .bar::after {
+    content: "";
+    display: block;
+    width: 22%;
+    height: 100%;
+    background: var(--sage);
+  }
+  .audio-stage .transcript-cta {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sage);
+    background: transparent;
+    border: 1px solid rgba(167,168,133,0.4);
+    padding: 12px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .audio-stage .transcript-cta:hover { background: var(--sage); color: var(--ink); }
+
+  /* CONTENT SECTIONS */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 72px 48px;
+  }
+  .content-section { margin-bottom: 64px; }
+  .content-section:last-child { margin-bottom: 0; }
+  .section-eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--burgundy);
+    margin-bottom: 20px;
+  }
+
+  /* SUMMARY */
+  .summary {
+    font-family: var(--serif);
+    font-size: 30px;
+    line-height: 1.35;
+    color: var(--ink);
+    max-width: 60ch;
+  }
+  .summary em { font-style: italic; color: var(--burgundy); }
+
+  /* ESSAY — long-form piece, flows directly under the summary */
+  .essay-body {
+    font-family: var(--serif);
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 62ch;
+    margin-top: 32px;
+  }
+  .essay-body p { margin-bottom: 22px; }
+  .essay-body p:last-child { margin-bottom: 0; }
+  .essay-body em { font-style: italic; }
+  .essay-body em.hebrew {
+    color: var(--burgundy);
+    font-style: italic;
+  }
+
+  /* SOURCES — light citation cards, 1–3 per episode (or omit) */
+  .sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .source-card {
+    display: block;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 22px 26px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: center;
+    transition: border-color 0.15s;
+  }
+  .source-card:hover { border-color: var(--burgundy); }
+  .source-card .cite {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .source-card .snippet {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.4;
+    color: var(--ink);
+    font-style: italic;
+  }
+  .source-card .go {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* TRANSCRIPT */
+  details.transcript {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  details.transcript > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 22px 48px 22px 0;
+    position: relative;
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  details.transcript > summary::-webkit-details-marker { display: none; }
+  details.transcript > summary::after {
+    content: "+";
+    position: absolute;
+    right: 4px; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--serif);
+    font-size: 32px;
+    color: var(--burgundy);
+    line-height: 1;
+  }
+  details.transcript[open] > summary::after { content: "−"; }
+  details.transcript .body {
+    padding: 8px 0 32px;
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 62ch;
+  }
+  details.transcript .body p { margin-bottom: 20px; }
+  details.transcript .body p:last-child { margin-bottom: 0; }
+  details.transcript .body .speaker {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    margin-top: 22px;
+  }
+  details.transcript .body .speaker:first-child { margin-top: 0; }
+
+  /* GO DEEPER */
+  .deeper-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .deeper-card {
+    display: block;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 24px;
+    transition: border-color 0.15s;
+  }
+  .deeper-card:hover { border-color: var(--burgundy); }
+  .deeper-card .kind {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .deeper-card .title {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .deeper-card .title em { font-style: italic; }
+  .deeper-card .blurb {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .deeper-card .arrow {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+  }
+
+  /* MARK COMPLETE */
+  .mark-band {
+    background: var(--paper-pure);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 48px;
+    text-align: center;
+  }
+  .mark-band .mark-copy {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+  .mark-band .mark-copy em { font-style: italic; color: var(--burgundy); }
+  .btn-complete {
+    background: var(--burgundy);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: none;
+    padding: 18px 40px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-radius: 1px;
+  }
+  .btn-complete:hover { background: var(--ink); }
+  .btn-complete svg { width: 14px; height: 14px; margin-right: 10px; vertical-align: -2px; }
+
+  /* PREV/NEXT NAV */
+  .step-nav {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 64px 48px 96px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .step-nav a {
+    display: block;
+    text-decoration: none;
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .step-nav a .dir {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .step-nav a .ep-title {
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--ink);
+    line-height: 1.2;
+    transition: color 0.15s;
+  }
+  .step-nav a .ep-title em { font-style: italic; }
+  .step-nav a .day-no {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .step-nav a:hover .ep-title { color: var(--burgundy); }
+  .step-nav .next { text-align: right; }
+
+  /* FOOTER */
+  footer.site {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px 48px;
+  }
+  footer.site .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: rgba(234,226,208,0.7);
+  }
+  footer.site .wordmark img { height: 24px; }
+  footer.site .copyright { text-align: right; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav.top .links a { display: none; }
+    nav.top .links a:last-of-type, nav.top .links button { display: inline-flex; }
+    .context, .title-band, .player-inner, .content, .step-nav, footer.site { padding-left: 24px; padding-right: 24px; }
+    h1.episode-h { font-size: clamp(36px, 8vw, 60px); }
+    .sefaria-panel .cols { grid-template-columns: 1fr; }
+    .sefaria-panel .col-heb { border-right: none; border-bottom: 1px solid var(--rule); }
+    .deeper-grid { grid-template-columns: 1fr; }
+    .audio-stage { grid-template-columns: 72px 1fr; padding: 24px; gap: 20px; }
+    .audio-stage .transcript-cta { grid-column: 1 / -1; text-align: center; margin-top: 8px; }
+    .step-nav { grid-template-columns: 1fr; gap: 8px; }
+    .step-nav .next { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-tag">Mockup · Episode page</div>
+
+<!-- NAV -->
+<nav class="top">
+  <div class="inner">
+    <a class="wordmark" href="/" aria-label="Talmud Daily home">
+      <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
+    </a>
+    <div class="links">
+      <a href="/episodes/" class="active">Episodes</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTEXT STRIP -->
+<div class="context">
+  <div class="breadcrumbs">
+    <a href="/episodes/" style="color:var(--muted); text-decoration:none;">Episodes</a>
+    <span class="sep">/</span>
+    Zeraim
+    <span class="sep">·</span>
+    Brachos
+    <span class="sep">·</span>
+    Tue — In Daily Life
+  </div>
+  <div class="progress">Day <em>7</em> of 160</div>
+</div>
+
+<!-- TITLE -->
+<div class="title-band">
+  <h1 class="episode-h">Bread and the <em>meaning of blessing</em>.</h1>
+  <div class="episode-meta">
+    <div class="item"><span class="dot"></span><strong>10:14</strong> · Sept 1, 2026</div>
+    <div class="item">Hosted by <strong>Dovid Bashevkin</strong></div>
+  </div>
+</div>
+
+<!-- PLAYER BAND -->
+<section class="player-band">
+  <div class="player-inner">
+    <!-- Video (default) -->
+    <div class="video-stage" id="video-mode">
+      <button class="play-hero" aria-label="Play video">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+      </button>
+      <div class="video-label">JWPlayer · Day 7 · 10:14</div>
+    </div>
+
+    <!-- Audio (hidden by default; would show when toggle set to audio) -->
+    <div class="audio-stage" id="audio-mode" style="display:none;">
+      <button class="play-audio" aria-label="Play audio">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+      </button>
+      <div class="info">
+        <div class="label">Day 7 · Brachos · Tue</div>
+        <div class="track">Bread and the meaning of blessing.</div>
+        <div class="progress"><span>0:00</span><span class="bar"></span><span>10:14</span></div>
+      </div>
+      <button class="transcript-cta">Transcript ↓</button>
+    </div>
+
+    <!-- Watch / Listen toggle sits under the player -->
+    <div class="format-toggle-wrap">
+      <div class="format-toggle" role="tablist" aria-label="Choose format">
+        <button class="active" data-mode="video" aria-selected="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h14v16H4z" opacity="0.35"/><path d="M14 8l6 4-6 4V8z"/></svg>
+          Watch
+        </button>
+        <button data-mode="audio" aria-selected="false">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9v6h4l5 4V5L9 9H5z"/><path d="M16 8a5 5 0 010 8" fill="none" stroke="currentColor" stroke-width="2" opacity="0.7"/></svg>
+          Listen only
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<div class="content">
+  <section class="content-section">
+    <div class="section-eyebrow">In this episode</div>
+    <p class="summary">Why the rabbis put the blessing over bread <em>before</em> every other blessing — and what that priority says about how they understood the ordinary sanctity of a meal.</p>
+
+    <div class="essay-body">
+      <p>There's an order in the Talmud that isn't the order you'd expect. If you asked most people to rank the blessings — most important first — they might reach for wine. Kiddush. The Shabbos table. That's the drama. That's the sanctity. That's what a movie would show you if it wanted to say <em>this matters</em>.</p>
+
+      <p>But the Mishnah in Brachos doesn't do that. It puts bread first. Not just first among the foods that come from the ground, but first, full stop. The bread blessing — <em class="hebrew">hamotzi lechem min ha'aretz</em> — has a kind of primacy that no other blessing has. Once you say it, you don't need to say the blessings on anything else that comes as part of the meal. The bread covers the field. It's the priestly blessing of foods.</p>
+
+      <p>And the reason, as the Gemara draws out a page later, is that the Torah says of the priest, <em>"you shall sanctify him."</em> He opens first. He blesses first. He gets the finest portion first. Bread, in the rabbis' schema, is that priest. Bread is what stands in for the whole meal.</p>
+
+      <p>Which is such a strange thing to say when you think about it. Bread is the least dramatic food. It's the most everyday thing in the pantry. It's what you eat when you're not celebrating anything at all — a sandwich at your desk, a piece of toast in the morning, a hunk of challah at a lunch that has no ceremonial weight whatsoever.</p>
+
+      <p>The rabbis are making an argument. They're saying: sanctity doesn't live in the drama. It doesn't live in the wine. Sanctity lives in the thing you barely notice — the thing you would eat every day even if there were no religion at all. The most sacred act, the rabbis are saying, is to look at that thing and say the words that name it.</p>
+
+      <p><em class="hebrew">Hamotzi lechem min ha'aretz.</em> Who brings forth bread from the earth. Not "who gave us this holiday," not "who redeemed our ancestors" — but who brings forth bread. A simple description of a simple fact. And the moment you say it — the moment you notice that the bread came from somewhere, that wheat became flour became loaf, that the sun and the rain and the miller and the baker and the delivery truck all had to happen — the ordinary becomes different. Not because it changed. Because you did.</p>
+
+      <p>This is what a blessing is, in the rabbis' theology. It is not a request. It is not a magical incantation. It is a naming. And what naming does is: it makes the invisible visible. The bread was always sacred; you just weren't looking. The blessing is the moment you look.</p>
+
+      <p>And that's why bread comes first. Because if you can learn to see the sacred in a slice of bread — the least dramatic food, the most ordinary thing — you can learn to see it anywhere. The bread teaches you how to see. Everything else is downstream.</p>
+    </div>
+  </section>
+
+  <!-- SOURCES — optional per episode. Hide the whole section if the episode isn't tied to specific passages. -->
+  <section class="content-section">
+    <div class="section-eyebrow">Sources referenced</div>
+    <div class="sources-list">
+      <a class="source-card" href="https://www.sefaria.org/Berakhot.35a" target="_blank" rel="noopener">
+        <div>
+          <div class="cite">Brachos 35a · Mishnah</div>
+          <div class="snippet">"Over bread one says <span style="background:rgba(80,14,15,0.08); padding:0 3px;">hamotzi lechem min ha'aretz</span> — who brings forth bread from the earth."</div>
+        </div>
+        <span class="go">Read on Sefaria ↗</span>
+      </a>
+      <a class="source-card" href="https://www.sefaria.org/Berakhot.35b" target="_blank" rel="noopener">
+        <div>
+          <div class="cite">Brachos 35b · Gemara</div>
+          <div class="snippet">"To open first, to bless first, and to receive the finest portion first."</div>
+        </div>
+        <span class="go">Read on Sefaria ↗</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- TRANSCRIPT (collapsed) -->
+  <section class="content-section">
+    <div class="section-eyebrow">Transcript</div>
+    <details class="transcript">
+      <summary>Read the full transcript</summary>
+      <div class="body">
+        <span class="speaker">Dovid Bashevkin</span>
+        <p>There's a certain kind of order that shows up in the Talmud that isn't the order you'd expect. If I asked you to rank the blessings — most important first — you might say wine. Kiddush. The Shabbos table. That's the drama. That's the sanctity.</p>
+        <p>But the Mishnah in Brachos 35a doesn't do that. It puts bread first. Not just first among the foods that come from the ground, but first, full stop. The bread blessing — <em>hamotzi lechem min ha'aretz</em> — has a kind of primacy that no other blessing has. Once you say it, you don't need to say the blessings on anything else that comes as part of the meal. The bread covers the field.</p>
+        <p>And the reason, as the Gemara draws out, is that the Torah says of the priest, "you shall sanctify him." He opens first. He blesses first. He gets the finest portion first. Bread is that priest. Bread is what stands in for a whole meal.</p>
+        <span class="speaker">Dovid Bashevkin</span>
+        <p>Which is such a strange thing to say when you think about it, because bread is the least dramatic food. It's the most everyday thing. It's what you eat when you're not celebrating anything at all…</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- GO DEEPER -->
+  <section class="content-section">
+    <div class="section-eyebrow">Go deeper</div>
+    <div class="deeper-grid">
+      <a class="deeper-card" href="#" target="_blank" rel="noopener">
+        <div class="kind">Essay · 18Forty</div>
+        <div class="title">The <em>everyday sacred</em></div>
+        <div class="blurb">Why the ordinary is the point — and how the rabbis smuggled cosmic significance into the smallest gestures.</div>
+        <div class="arrow">Read →</div>
+      </a>
+      <a class="deeper-card" href="https://www.sefaria.org/Berakhot.35a" target="_blank" rel="noopener">
+        <div class="kind">Text · Sefaria</div>
+        <div class="title">Brachos 35a, in full</div>
+        <div class="blurb">The complete Gemara text with Rashi's commentary. Follow the argument through to the end.</div>
+        <div class="arrow">Study →</div>
+      </a>
+      <a class="deeper-card" href="#" target="_blank" rel="noopener">
+        <div class="kind">Book · Chapter 3</div>
+        <div class="title">How the Talmud Can Change Your Life</div>
+        <div class="blurb">Liel Leibovitz on why the rabbis made bread the anchor of the day — and what that means for the way we eat now.</div>
+        <div class="arrow">Read →</div>
+      </a>
+    </div>
+  </section>
+</div>
+
+<!-- MARK COMPLETE -->
+<section class="mark-band">
+  <p class="mark-copy">Finished today's ten minutes? <em>Mark it.</em></p>
+  <button class="btn-complete" onclick="this.innerHTML='✓&nbsp;&nbsp;MARKED COMPLETE'; this.style.background='var(--sage)'; this.style.color='var(--ink)'; this.disabled=true;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg>
+    I did today's episode
+  </button>
+</section>
+
+<!-- STEP NAV -->
+<div class="step-nav">
+  <a href="/episodes/6" class="prev">
+    <div class="dir">← Previous</div>
+    <div class="day-no">Day 6</div>
+    <div class="ep-title">The <em>first blessing</em>.</div>
+  </a>
+  <a href="/episodes/8" class="next">
+    <div class="dir">Next →</div>
+    <div class="day-no">Day 8</div>
+    <div class="ep-title">Wine, water, and <em>kavana</em>.</div>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="inner">
+    <a class="wordmark" href="/">
+      <img src="tdbrand/wordmark-cream.svg" alt="Talmud Daily">
+    </a>
+    <span>A project of 18Forty · A programmatic division of the OU</span>
+    <span class="copyright">© 2026 18Forty</span>
+  </div>
+</footer>
+
+<script>
+  // Format toggle: video ↔ audio-only
+  document.querySelectorAll('.format-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.format-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.mode;
+      document.getElementById('video-mode').style.display = mode === 'video' ? 'block' : 'none';
+      document.getElementById('audio-mode').style.display = mode === 'audio' ? 'grid' : 'none';
+      // In production: persist to localStorage: window.localStorage.setItem('td-format', mode)
+    });
+  });
+</script>
+
+</body>
+</html>

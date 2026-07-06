@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard — Talmud Daily</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #172020;
+    --ink-soft: #2A2A2A;
+    --paper: #EAE2D0;
+    --paper-pure: #F2EDDF;
+    --burgundy: #500E0F;
+    --burgundy-deep: #3D0A0B;
+    --sage: #A7A885;
+    --muted: #5E5C50;
+    --rule: #C9BFA6;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+    --sans: "Hind", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.55;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .mockup-tag {
+    position: fixed;
+    bottom: 12px; left: 12px;
+    background: var(--burgundy);
+    color: var(--paper);
+    padding: 6px 10px;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 100;
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  .wordmark { display: inline-flex; align-items: center; text-decoration: none; line-height: 1; }
+  .wordmark img { display: block; height: 28px; width: auto; }
+
+  /* NAV */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(234,226,208,0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.top .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav.top .links { display: flex; gap: 30px; align-items: center; font-size: 14px; font-family: var(--sans); }
+  nav.top .links a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+  nav.top .links a:hover { color: var(--burgundy); }
+  nav.top .links a.active { color: var(--burgundy); border-bottom: 1px solid var(--burgundy); padding-bottom: 2px; }
+
+  /* PAGE HEADER */
+  .page-header {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 56px 48px 28px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+    gap: 48px;
+    align-items: end;
+    border-bottom: 1px solid var(--rule);
+  }
+  .page-header .title-block .kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .page-header h1 {
+    font-family: var(--serif);
+    font-size: clamp(46px, 5.6vw, 74px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .page-header h1 em { font-style: italic; }
+  .page-header .lede {
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.4;
+    color: var(--muted);
+    max-width: 46ch;
+  }
+  .page-header .progress-block {
+    min-width: 300px;
+    padding-bottom: 6px;
+  }
+  .progress-block .stat {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .progress-block .stat em {
+    color: var(--burgundy);
+    font-style: normal;
+    font-weight: 700;
+  }
+  .progress-block .bar {
+    height: 6px;
+    background: var(--rule);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .progress-block .bar-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: var(--burgundy);
+  }
+  .progress-block .caption {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  /* TODAY CARD */
+  .today {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 48px 0;
+  }
+  .today .today-band {
+    background: var(--burgundy);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .today .today-band .td-watermark {
+    position: absolute;
+    right: -60px; top: 50%;
+    transform: translateY(-50%);
+    width: 380px; height: 470px;
+    background: url("tdbrand/monogram-cream.svg") no-repeat center/contain;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+  .today .today-copy { position: relative; z-index: 1; flex: 1 1 60%; min-width: 0; }
+  .today .today-eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .today .today-title {
+    font-family: var(--serif);
+    font-size: clamp(30px, 3.4vw, 44px);
+    line-height: 1.05;
+    color: var(--paper);
+    margin-bottom: 12px;
+  }
+  .today .today-title em { font-style: italic; }
+  .today .today-sum {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--paper);
+    opacity: 0.9;
+    max-width: 56ch;
+    line-height: 1.4;
+  }
+  .today .today-cta {
+    position: relative; z-index: 1;
+    background: var(--paper);
+    color: var(--burgundy);
+    border: none;
+    padding: 20px 34px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+  }
+  .today .today-cta:hover { background: var(--sage); color: var(--ink); }
+  .today .today-cta svg { width: 14px; height: 14px; }
+
+  /* FILTERS */
+  .filters {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 48px 8px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filters .filter-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .chip {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 9px 16px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .chip:hover { color: var(--burgundy); border-color: var(--burgundy); }
+  .chip.active {
+    background: var(--burgundy);
+    color: var(--paper);
+    border-color: var(--burgundy);
+  }
+
+  /* DASHBOARD LIST */
+  .dashboard {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 24px 48px 96px;
+  }
+
+  /* SEDER SECTION HEADER */
+  .seder-block { margin-bottom: 56px; }
+  .seder-block:last-child { margin-bottom: 0; }
+  .seder-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 32px;
+    align-items: baseline;
+    padding: 16px 0 12px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 4px;
+  }
+  .seder-head .h-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+  }
+  .seder-head .h-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--ink);
+    line-height: 1.05;
+  }
+  .seder-head .h-title .translation {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin-left: 12px;
+    vertical-align: 4px;
+  }
+  .seder-head .h-meta {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .seder-head .h-meta em { color: var(--burgundy); font-style: normal; font-weight: 700; }
+
+  /* WEEK CARD (collapsible) */
+  details.week {
+    border-bottom: 1px solid var(--rule);
+  }
+  details.week > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 22px 0;
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr) auto auto 24px;
+    align-items: center;
+    gap: 32px;
+    transition: color 0.15s;
+  }
+  details.week > summary::-webkit-details-marker { display: none; }
+  details.week > summary:hover .wk-title { color: var(--burgundy); }
+
+  .wk-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--sage);
+    line-height: 1;
+  }
+  .wk-title-block { min-width: 0; }
+  .wk-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 3px;
+    transition: color 0.15s;
+  }
+  .wk-title em { font-style: italic; }
+  .wk-sub {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .wk-sub .sep { color: var(--rule); margin: 0 8px; }
+  .wk-dates {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .wk-dots {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .wk-dots .dot {
+    display: block;
+    flex: 0 0 auto;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 1px solid var(--rule);
+    background: transparent;
+    box-sizing: border-box;
+  }
+  .wk-dots .dot.done {
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+  .wk-dots .dot.now {
+    background: var(--burgundy);
+    border-color: var(--burgundy);
+  }
+  .wk-caret {
+    color: var(--burgundy);
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  details.week[open] .wk-caret { transform: rotate(180deg); }
+
+  /* Current week emphasis */
+  details.week.current > summary {
+    background: linear-gradient(90deg, rgba(80,14,15,0.06) 0%, rgba(80,14,15,0) 100%);
+    margin: 0 -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  details.week.current .wk-num { color: var(--burgundy); }
+  .current-flag {
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: var(--burgundy);
+    font-weight: 700;
+    background: rgba(80,14,15,0.1);
+    padding: 3px 8px;
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: 3px;
+  }
+
+  /* Completed week — subtle */
+  details.week.done > summary .wk-title { color: var(--muted); }
+  details.week.done .wk-num { opacity: 0.65; }
+
+  /* Future week — very subtle */
+  details.week.future > summary .wk-title { color: var(--muted); }
+  details.week.future .wk-num { opacity: 0.55; }
+  details.week.future .wk-dates { color: var(--muted); }
+
+  /* Expanded body */
+  .wk-body {
+    padding: 4px 0 28px 122px;
+  }
+  .wk-body .ep-row {
+    display: grid;
+    grid-template-columns: 44px 88px minmax(0, 1fr) 22px;
+    gap: 24px;
+    padding: 14px 0;
+    border-top: 1px dotted var(--rule);
+    text-decoration: none;
+    color: inherit;
+    align-items: baseline;
+  }
+  .wk-body .ep-row:first-child { border-top: none; padding-top: 8px; }
+  .wk-body .ep-row:hover .ep-title { color: var(--burgundy); }
+  .wk-body .ep-row .day-no {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--sage);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .wk-body .ep-row .weekday {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .wk-body .ep-row .weekday .date {
+    color: var(--muted);
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    margin-top: 2px;
+  }
+  .wk-body .ep-row .ep-title {
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 2px;
+    transition: color 0.15s;
+  }
+  .wk-body .ep-row .ep-title em { font-style: italic; }
+  .wk-body .ep-row .ep-sum {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .wk-body .ep-row .check {
+    color: var(--sage);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 4px;
+  }
+  .wk-body .ep-row .check svg { width: 15px; height: 15px; }
+
+  /* Today row inside expanded week */
+  .wk-body .ep-row.is-today {
+    background: linear-gradient(90deg, rgba(80,14,15,0.06) 0%, rgba(80,14,15,0) 100%);
+    margin: 0 -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-bottom: 1px solid var(--burgundy);
+  }
+  .wk-body .ep-row.is-today .day-no { color: var(--burgundy); font-style: italic; }
+  .today-badge {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.24em;
+    color: var(--burgundy);
+    font-weight: 700;
+    background: rgba(80,14,15,0.1);
+    padding: 2px 7px;
+    margin-right: 8px;
+    vertical-align: 2px;
+  }
+
+  /* Future / placeholder episode row (no title yet) */
+  .wk-body .ep-row.placeholder .ep-title {
+    color: var(--muted);
+    font-style: italic;
+    opacity: 0.75;
+  }
+  .wk-body .ep-row.placeholder .day-no,
+  .wk-body .ep-row.placeholder .weekday { opacity: 0.55; }
+
+  /* Empty state note when future week has no titles yet */
+  .wk-body .titles-note {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 8px 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .wk-body .titles-note::before {
+    content: "";
+    width: 24px; height: 1px;
+    background: var(--rule);
+    display: inline-block;
+  }
+
+  /* JUMP ellipsis between mocked sections */
+  .jump {
+    margin: 44px 0;
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--muted);
+    font-size: 15px;
+    position: relative;
+  }
+  .jump::before, .jump::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 220px);
+    height: 1px;
+    background: var(--rule);
+  }
+  .jump::before { left: 0; }
+  .jump::after { right: 0; }
+
+  /* FOOTER */
+  footer.site {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px 48px;
+  }
+  footer.site .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: rgba(234,226,208,0.7);
+  }
+  footer.site .wordmark img { height: 24px; }
+  footer.site .copyright { text-align: right; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav.top .links { display: none; }
+    .page-header, .today, .filters, .dashboard, footer.site { padding-left: 24px; padding-right: 24px; }
+    .page-header { grid-template-columns: 1fr; gap: 28px; }
+    .page-header .progress-block { min-width: 0; }
+    .today .today-band { padding: 28px 24px; gap: 20px; }
+    details.week > summary {
+      grid-template-columns: 60px minmax(0, 1fr) 24px;
+      gap: 18px;
+      padding: 18px 0;
+    }
+    .wk-dates, .wk-dots { grid-column: 2; grid-row: 2; margin-top: 4px; }
+    .wk-body { padding-left: 78px; }
+    .wk-body .ep-row {
+      grid-template-columns: 36px 68px minmax(0, 1fr) 22px;
+      gap: 14px;
+    }
+    .wk-body .ep-row .ep-title { font-size: 17px; }
+    .seder-head { grid-template-columns: 1fr; gap: 8px; }
+    .seder-head .h-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-tag">Mockup · Dashboard · during-program state</div>
+
+<!-- NAV -->
+<nav class="top">
+  <div class="inner">
+    <a class="wordmark" href="/" aria-label="Talmud Daily home">
+      <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
+    </a>
+    <div class="links">
+      <a href="/dashboard/" class="active">Dashboard</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="title-block">
+    <div class="kicker">Dashboard</div>
+    <h1>Where you are, <em>and what's next</em>.</h1>
+    <p class="lede">Forty weeks. One tractate a week. A daily ten-minute path through the Talmud, ending at Siyum HaShas on June 6, 2027.</p>
+  </div>
+  <div class="progress-block">
+    <div class="stat">Your progress · <em>Week 4</em> of 40</div>
+    <div class="bar"><div class="bar-fill" style="width:9%;"></div></div>
+    <p class="caption">Zeraim · Brachos. 16 episodes complete.</p>
+  </div>
+</div>
+
+<!-- TODAY CARD -->
+<div class="today">
+  <div class="today-band">
+    <div class="td-watermark"></div>
+    <div class="today-copy">
+      <div class="today-eyebrow">Today · Day 17 · Brachos · Tue · Sep 15, 2026</div>
+      <h2 class="today-title">Bread and the <em>meaning of blessing</em>.</h2>
+      <p class="today-sum">Why the rabbis put the blessing over bread before every other blessing — and what that priority says about how they understood the ordinary sanctity of a meal.</p>
+    </div>
+    <a href="/episodes/17" class="today-cta">
+      <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+      Play today
+    </a>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <span class="filter-label">Filter</span>
+  <button class="chip active">All</button>
+  <button class="chip">Foundations</button>
+  <button class="chip">Zeraim</button>
+  <button class="chip">Moed</button>
+  <button class="chip">Nashim</button>
+  <button class="chip">Nezikin</button>
+  <button class="chip">Kodashim</button>
+  <button class="chip">Tahoros</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard">
+
+  <!-- FOUNDATIONS SECTION -->
+  <div class="seder-block">
+    <div class="seder-head">
+      <div>
+        <div class="h-label">Weeks 1–3</div>
+        <div class="h-title">Foundations <span class="translation">Groundwork</span></div>
+      </div>
+      <div class="h-meta"><em>3 of 3</em> weeks complete</div>
+    </div>
+
+    <details class="week done">
+      <summary>
+        <div class="wk-num">Week 1</div>
+        <div class="wk-title-block">
+          <div class="wk-title">What the Talmud <em>is</em>.</div>
+          <div class="wk-sub">A first look at the book and the rabbis <span class="sep">·</span> Aug 24 – 28, 2026</div>
+        </div>
+        <div class="wk-dates">Aug 24 – 28</div>
+        <div class="wk-dots">
+          <span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span>
+        </div>
+        <div class="wk-caret">▾</div>
+      </summary>
+      <div class="wk-body">
+        <a class="ep-row" href="/episodes/1">
+          <span class="day-no">1</span>
+          <span class="weekday">Mon<span class="date">Aug 24</span></span>
+          <span>
+            <span class="ep-title">A room with the door open.</span>
+            <span class="ep-sum">Why the Talmud has felt out of reach — and what changes when it doesn't.</span>
+          </span>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg></span>
+        </a>
+        <a class="ep-row" href="/episodes/2">
+          <span class="day-no">2</span>
+          <span class="weekday">Tue<span class="date">Aug 25</span></span>
+          <span>
+            <span class="ep-title">Who wrote it, and <em>when</em>.</span>
+            <span class="ep-sum">The rabbis of Yavneh, and the eight-hundred-year conversation.</span>
+          </span>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg></span>
+        </a>
+        <a class="ep-row" href="/episodes/3">
+          <span class="day-no">3</span>
+          <span class="weekday">Wed<span class="date">Aug 26</span></span>
+          <span>
+            <span class="ep-title">How to read a page.</span>
+            <span class="ep-sum">The layout of a daf — Mishnah, Gemara, Rashi, Tosafos.</span>
+          </span>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg></span>
+        </a>
+        <a class="ep-row" href="/episodes/4">
+          <span class="day-no">4</span>
+          <span class="weekday">Thu<span class="date">Aug 27</span></span>
+          <span>
+            <span class="ep-title">Arguments and <em>the argument</em>.</span>
+            <span class="ep-sum">Why the rabbis disagree in public — and what "elu v'elu" means.</span>
+          </span>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg></span>
+        </a>
+        <a class="ep-row" href="/episodes/5">
+          <span class="day-no">5</span>
+          <span class="weekday">Fri · Voices<span class="date">Aug 28</span></span>
+          <span>
+            <span class="ep-title">A conversation with Dara Horn.</span>
+            <span class="ep-sum">On the Talmud as a book that survives by being argued with.</span>
+          </span>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg></span>
+        </a>
+      </div>
+    </details>
+
+    <details class="week done">
+      <summary>
+        <div class="wk-num">Week 2</div>
+        <div class="wk-title-block">
+          <div class="wk-title">Halacha, aggadah, and <em>memory</em>.</div>
+          <div class="wk-sub">Two languages of the Talmud <span class="sep">·</span> Aug 31 – Sep 4, 2026</div>
+        </div>
+        <div class="wk-dates">Aug 31 – Sep 4</div>
+        <div class="wk-dots">
+          <span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span>
+        </div>
+        <div class="wk-caret">▾</div>
+      </summary>
+      <div class="wk-body">
+        <div class="titles-note">Expand to review episodes.</div>
+      </div>
+    </details>
+
+    <details class="week done">
+      <summary>
+        <div class="wk-num">Week 3</div>
+        <div class="wk-title-block">
+          <div class="wk-title">The everyday and <em>the sacred</em>.</div>
+          <div class="wk-sub">Where the Talmud lives now <span class="sep">·</span> Sep 7 – 11, 2026</div>
+        </div>
+        <div class="wk-dates">Sep 7 – 11</div>
+        <div class="wk-dots">
+          <span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span>
+        </div>
+        <div class="wk-caret">▾</div>
+      </summary>
+      <div class="wk-body">
+        <div class="titles-note">Expand to review episodes.</div>
+      </div>
+    </details>
+  </div>
+
+  <!-- ZERAIM SECTION -->
+  <div class="seder-block">
+    <div class="seder-head">
+      <div>
+        <div class="h-label">Zeraim</div>
+        <div class="h-title">Agriculture <span class="translation">Seder 1 of 6</span></div>
+      </div>
+      <div class="h-meta">Week 4 · current</div>
+    </div>
+
+    <details class="week current" open>
+      <summary>
+        <div class="wk-num">Week 4</div>
+        <div class="wk-title-block">
+          <div class="wk-title">Brachos. <em>Blessings.</em><span class="current-flag">CURRENT</span></div>
+          <div class="wk-sub">Naming what's in front of you <span class="sep">·</span> Sep 14 – 18, 2026</div>
+        </div>
+        <div class="wk-dates">Sep 14 – 18</div>
+        <div class="wk-dots">
+          <span class="dot done"></span><span class="dot now"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="wk-caret">▾</div>
+      </summary>
+      <div class="wk-body">
+        <a class="ep-row" href="/episodes/16">
+          <span class="day-no">16</span>
+          <span class="weekday">Mon<span class="date">Sep 14</span></span>
+          <span>
+            <span class="ep-title">Why we bless.</span>
+            <span class="ep-sum">The opening of Brachos, and what it means to name what's in front of you.</span>
+          </span>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg></span>
+        </a>
+        <a class="ep-row is-today" href="/episodes/17">
+          <span class="day-no">17</span>
+          <span class="weekday">Tue<span class="date">Sep 15</span></span>
+          <span>
+            <span class="ep-title"><span class="today-badge">TODAY</span>Bread and the <em>meaning of blessing</em>.</span>
+            <span class="ep-sum">Why the rabbis put the blessing over bread before every other blessing.</span>
+          </span>
+          <span class="check"></span>
+        </a>
+        <a class="ep-row" href="/episodes/18">
+          <span class="day-no">18</span>
+          <span class="weekday">Wed<span class="date">Sep 16</span></span>
+          <span>
+            <span class="ep-title">Wine, water, and <em>kavana</em>.</span>
+            <span class="ep-sum">Coming Wednesday.</span>
+          </span>
+          <span class="check"></span>
+        </a>
+        <a class="ep-row" href="/episodes/19">
+          <span class="day-no">19</span>
+          <span class="weekday">Thu<span class="date">Sep 17</span></span>
+          <span>
+            <span class="ep-title">The Shema and <em>the shape of a day</em>.</span>
+            <span class="ep-sum">Coming Thursday.</span>
+          </span>
+          <span class="check"></span>
+        </a>
+        <a class="ep-row" href="/episodes/20">
+          <span class="day-no">20</span>
+          <span class="weekday">Fri · Voices<span class="date">Sep 18</span></span>
+          <span>
+            <span class="ep-title">A conversation with Sara Hurwitz.</span>
+            <span class="ep-sum">Coming Friday.</span>
+          </span>
+          <span class="check"></span>
+        </a>
+      </div>
+    </details>
+  </div>
+
+  <!-- MOED SECTION -->
+  <div class="seder-block">
+    <div class="seder-head">
+      <div>
+        <div class="h-label">Moed</div>
+        <div class="h-title">Holidays <span class="translation">Seder 2 of 6 · 11 tractates</span></div>
+      </div>
+      <div class="h-meta">Weeks 5 – 15</div>
+    </div>
+
+    <details class="week future">
+      <summary>
+        <div class="wk-num">Week 5</div>
+        <div class="wk-title-block">
+          <div class="wk-title">Shabbos. <em>The Sabbath.</em></div>
+          <div class="wk-sub">Rest, and what it's for <span class="sep">·</span> Sep 21 – 25, 2026</div>
+        </div>
+        <div class="wk-dates">Sep 21 – 25</div>
+        <div class="wk-dots">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="wk-caret">▾</div>
+      </summary>
+      <div class="wk-body">
+        <a class="ep-row placeholder" href="#">
+          <span class="day-no">21</span>
+          <span class="weekday">Mon<span class="date">Sep 21</span></span>
+          <span>
+            <span class="ep-title">Title released the week of.</span>
+            <span class="ep-sum">Every daily episode's title and summary are published the week before the tractate begins.</span>
+          </span>
+          <span class="check"></span>
+        </a>
+        <a class="ep-row placeholder" href="#">
+          <span class="day-no">22</span>
+          <span class="weekday">Tue<span class="date">Sep 22</span></span>
+          <span><span class="ep-title">Title released the week of.</span></span>
+          <span class="check"></span>
+        </a>
+        <a class="ep-row placeholder" href="#">
+          <span class="day-no">23</span>
+          <span class="weekday">Wed<span class="date">Sep 23</span></span>
+          <span><span class="ep-title">Title released the week of.</span></span>
+          <span class="check"></span>
+        </a>
+        <a class="ep-row placeholder" href="#">
+          <span class="day-no">24</span>
+          <span class="weekday">Thu<span class="date">Sep 24</span></span>
+          <span><span class="ep-title">Title released the week of.</span></span>
+          <span class="check"></span>
+        </a>
+        <a class="ep-row placeholder" href="#">
+          <span class="day-no">25</span>
+          <span class="weekday">Fri · Voices<span class="date">Sep 25</span></span>
+          <span><span class="ep-title">Voices guest announced closer to the date.</span></span>
+          <span class="check"></span>
+        </a>
+      </div>
+    </details>
+
+    <details class="week future">
+      <summary>
+        <div class="wk-num">Week 6</div>
+        <div class="wk-title-block">
+          <div class="wk-title">Eruvin. <em>Boundaries.</em></div>
+          <div class="wk-sub">Sep 28 – Oct 2, 2026</div>
+        </div>
+        <div class="wk-dates">Sep 28 – Oct 2</div>
+        <div class="wk-dots">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="wk-caret">▾</div>
+      </summary>
+      <div class="wk-body">
+        <div class="titles-note">Daily titles released the week of · Voices guest announced closer to the date.</div>
+      </div>
+    </details>
+
+    <details class="week future">
+      <summary>
+        <div class="wk-num">Week 7</div>
+        <div class="wk-title-block">
+          <div class="wk-title">Pesachim. <em>Passover and the Seder.</em></div>
+          <div class="wk-sub">Oct 5 – 9, 2026</div>
+        </div>
+        <div class="wk-dates">Oct 5 – 9</div>
+        <div class="wk-dots">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="wk-caret">▾</div>
+      </summary>
+      <div class="wk-body">
+        <div class="titles-note">Daily titles released the week of.</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="jump">33 more tractates between here and the finish.</div>
+
+  <!-- FINAL WEEK -->
+  <div class="seder-block">
+    <div class="seder-head">
+      <div>
+        <div class="h-label">Tahoros</div>
+        <div class="h-title">Purity <span class="translation">Seder 6 of 6 · The end of the journey</span></div>
+      </div>
+      <div class="h-meta">Week 40 · final</div>
+    </div>
+
+    <details class="week future">
+      <summary>
+        <div class="wk-num">Week 40</div>
+        <div class="wk-title-block">
+          <div class="wk-title">Niddah. <em>Purity, at the end.</em></div>
+          <div class="wk-sub">Ending at Siyum HaShas <span class="sep">·</span> Jun 1 – 6, 2027</div>
+        </div>
+        <div class="wk-dates">Jun 1 – 6</div>
+        <div class="wk-dots">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="wk-caret">▾</div>
+      </summary>
+      <div class="wk-body">
+        <div class="titles-note">Final week · Siyum HaShas on Sunday, June 6, 2027.</div>
+      </div>
+    </details>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="inner">
+    <a class="wordmark" href="/">
+      <img src="tdbrand/wordmark-cream.svg" alt="Talmud Daily">
+    </a>
+    <span>A project of 18Forty · A programmatic division of the OU</span>
+    <span class="copyright">© 2026 18Forty</span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
