@@ -460,6 +460,15 @@
     font-style: italic;
   }
   .preview .p-panel .p-line em { font-style: italic; color: var(--burgundy); }
+  .preview .p-panel .p-dedication {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.35;
+    font-style: italic;
+    margin-top: 4px;
+  }
+  .preview .p-panel .p-dedication em { color: var(--burgundy); }
   .preview .p-note {
     font-family: var(--serif);
     font-style: italic;
@@ -817,19 +826,20 @@
   <div class="preview-col">
     <div class="preview">
       <div class="p-eyebrow">Preview</div>
-      <div class="p-title">How your dedication will appear.</div>
-      <div class="p-sub">On the episode page · in the daily email · on the archive</div>
+      <div class="p-title" id="p-title">How your dedication will appear.</div>
+      <div class="p-sub" id="p-sub">On the episode page · in the daily email · on the archive</div>
 
-      <div class="p-panel">
-        <div class="p-panel-label">Tue, Sep 15, 2026 · Brachos</div>
-        <p class="p-line">Sponsored by <em>[Your Name]</em>.</p>
+      <div class="p-panel" id="p-panel">
+        <div class="p-panel-label" id="p-panel-label">Tue, Sep 15, 2026 · Brachos</div>
+        <p class="p-line" id="p-line">Sponsored by <em>[Your Name]</em>.</p>
+        <p class="p-dedication" id="p-dedication" style="display: none;"></p>
       </div>
 
-      <p class="p-note">Add a dedication above to see it appear here — <em>"in memory of…"</em> or <em>"in honor of…"</em>. If you choose Anonymous, the line simply reads "Sponsored anonymously."</p>
+      <p class="p-note" id="p-note">Add a dedication above to see it appear here — <em>"in memory of…"</em> or <em>"in honor of…"</em>. If you choose Anonymous, the line simply reads "Sponsored anonymously."</p>
 
       <div class="amt-summary">
         <span>Your gift</span>
-        <span class="total">$500</span>
+        <span class="total" id="p-total">$500</span>
       </div>
     </div>
   </div>
@@ -854,6 +864,105 @@
 </footer>
 
 <script>
+  // ---------- PREVIEW UPDATE ----------
+  function escapeHTML(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function updatePreview() {
+    const activePanel = document.querySelector('.form-panel.active');
+    if (!activePanel) return;
+    const panelType = activePanel.id.replace('panel-', ''); // day / week / general
+
+    // Read form state from the active panel
+    const select = activePanel.querySelector('select');
+    const selectedText = select && select.selectedIndex >= 0
+      ? select.options[select.selectedIndex].text
+      : '';
+
+    // First choice-group in the panel is always the dedication
+    const dedicationGroup = activePanel.querySelector('.choice-group');
+    const dedicationValue = dedicationGroup
+      ? (dedicationGroup.querySelector('.choice.active') || {}).dataset?.value
+      : null;
+    const dedicationInput = dedicationGroup
+      ? dedicationGroup.closest('.field-group').querySelector('input[type="text"]')
+      : null;
+    const dedicationName = dedicationInput ? dedicationInput.value.trim() : '';
+
+    // Listing name + anonymous (only Day + Week panels)
+    const listingInput = activePanel.querySelector('.listing-input');
+    const anonBox = activePanel.querySelector('.anon-toggle input[type="checkbox"]');
+    const listingName = listingInput ? listingInput.value.trim() : '';
+    const isAnon = anonBox ? anonBox.checked : false;
+
+    // Amount — either fixed panel value or picker button
+    const fixedAmt = activePanel.querySelector('.fixed-amount .amt');
+    const amtBtn = activePanel.querySelector('.amt-btn.active');
+    let amountStr = '$—';
+    if (fixedAmt) {
+      amountStr = fixedAmt.textContent.trim();
+    } else if (amtBtn) {
+      amountStr = '$' + Number(amtBtn.dataset.val).toLocaleString();
+    }
+
+    // --- Update the preview DOM ---
+    const pTitle = document.getElementById('p-title');
+    const pSub = document.getElementById('p-sub');
+    const pPanel = document.getElementById('p-panel');
+    const pPanelLabel = document.getElementById('p-panel-label');
+    const pLine = document.getElementById('p-line');
+    const pDedication = document.getElementById('p-dedication');
+    const pNote = document.getElementById('p-note');
+    const pTotal = document.getElementById('p-total');
+
+    if (panelType === 'general') {
+      pTitle.textContent = 'Your gift.';
+      pSub.textContent = 'General donations stay private';
+      pPanel.style.display = 'none';
+      if (dedicationValue && dedicationValue !== 'none' && dedicationName) {
+        const prefix = dedicationValue === 'memory' ? 'in memory of' : 'in honor of';
+        pNote.innerHTML = `Your dedication — <em>${prefix} ${escapeHTML(dedicationName)}</em> — is recorded on your receipt.`;
+      } else {
+        pNote.innerHTML = 'General gifts aren\'t listed publicly. Only day and tractate sponsorships appear on the site and in the daily email.';
+      }
+    } else {
+      pTitle.textContent = 'How your dedication will appear.';
+      pSub.textContent = 'On the episode page · in the daily email · on the archive';
+      pPanel.style.display = '';
+
+      // Context label
+      if (panelType === 'day') {
+        pPanelLabel.textContent = selectedText || 'Choose a day above';
+      } else if (panelType === 'week') {
+        pPanelLabel.textContent = selectedText || 'Choose a tractate above';
+      }
+
+      // Sponsor line
+      if (isAnon) {
+        pLine.innerHTML = 'Sponsored <em>anonymously</em>.';
+      } else if (listingName) {
+        pLine.innerHTML = `Sponsored by <em>${escapeHTML(listingName)}</em>.`;
+      } else {
+        pLine.innerHTML = 'Sponsored by <em>[Your Name]</em>.';
+      }
+
+      // Dedication line
+      if (dedicationValue && dedicationValue !== 'none' && dedicationName) {
+        const prefix = dedicationValue === 'memory' ? 'In memory of' : 'In honor of';
+        pDedication.innerHTML = `${prefix} <em>${escapeHTML(dedicationName)}</em>.`;
+        pDedication.style.display = '';
+      } else {
+        pDedication.style.display = 'none';
+      }
+
+      pNote.innerHTML = 'Add a dedication above to see it appear here — <em>"in memory of…"</em> or <em>"in honor of…"</em>. Check the anonymous option to see how that reads.';
+    }
+
+    pTotal.textContent = amountStr;
+  }
+
+  // ---------- WIRING ----------
   // Tab switching
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -862,16 +971,17 @@
       document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById('panel-' + panel).classList.add('active');
+      updatePreview();
     });
   });
 
-  // Choice group toggles (dedication, listing, amount)
+  // Choice group toggles (dedication + amount picker choice-style)
   document.querySelectorAll('.choice-group').forEach(group => {
     group.querySelectorAll('.choice').forEach(choice => {
       choice.addEventListener('click', () => {
         group.querySelectorAll('.choice').forEach(c => c.classList.remove('active'));
         choice.classList.add('active');
-        // If it's the dedication group, toggle the name input
+        // If dedication, toggle the name input
         const parent = group.closest('.field-group');
         if (parent) {
           const nameInput = parent.querySelector('input.input[type="text"]');
@@ -884,38 +994,48 @@
             nameInput.value = '';
           }
         }
+        updatePreview();
       });
     });
   });
 
-  // Anonymous checkbox — dim & disable the listing-name input when checked
+  // Anonymous checkbox
   document.querySelectorAll('.anon-toggle input[type="checkbox"]').forEach(box => {
     box.addEventListener('change', () => {
       const parent = box.closest('.field-group');
       const listingInput = parent && parent.querySelector('.listing-input');
-      if (!listingInput) return;
-      if (box.checked) {
-        listingInput.classList.add('anon-active');
-        listingInput.disabled = true;
-      } else {
-        listingInput.classList.remove('anon-active');
-        listingInput.disabled = false;
+      if (listingInput) {
+        if (box.checked) {
+          listingInput.classList.add('anon-active');
+          listingInput.disabled = true;
+        } else {
+          listingInput.classList.remove('anon-active');
+          listingInput.disabled = false;
+        }
       }
+      updatePreview();
     });
   });
 
-  // Amount picker (visual state only)
+  // Amount picker buttons
   document.querySelectorAll('.amount-picker').forEach(picker => {
     picker.querySelectorAll('.amt-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         picker.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        // Update preview total
-        const total = document.querySelector('.amt-summary .total');
-        if (total) total.textContent = '$' + Number(btn.dataset.val).toLocaleString();
+        updatePreview();
       });
     });
   });
+
+  // Live-update on ANY text input or select change in the form
+  document.querySelectorAll('.form-panel input[type="text"], .form-panel input[type="email"], .form-panel select').forEach(el => {
+    el.addEventListener('input', updatePreview);
+    el.addEventListener('change', updatePreview);
+  });
+
+  // Initial paint
+  updatePreview();
 </script>
 
 </body>
