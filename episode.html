@@ -135,6 +135,40 @@
   .episode-meta .item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--burgundy); display: inline-block; }
   .episode-meta strong { color: var(--ink); font-weight: 500; }
 
+  /* SPONSOR LINES — day + tractate dedications, populated per-episode via ACF */
+  .sponsors {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 48px 32px;
+  }
+  .sponsors-inner {
+    border-left: 3px solid var(--burgundy);
+    padding: 14px 22px;
+    background: var(--paper-pure);
+  }
+  .sponsor-line {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .sponsor-line strong { font-style: normal; font-weight: 500; color: var(--ink); }
+  .sponsor-line em { font-style: italic; color: var(--burgundy); }
+  .sponsor-line + .sponsor-line { margin-top: 8px; }
+  .sponsor-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-right: 12px;
+    font-style: normal;
+    display: inline-block;
+    vertical-align: 2px;
+  }
+
   /* PLAYER BAND */
   .player-band {
     background: var(--burgundy);
@@ -649,6 +683,14 @@
   <div class="episode-meta">
     <div class="item"><span class="dot"></span><strong>10:14</strong> · Sept 1, 2026</div>
     <div class="item">Hosted by <strong>Dovid Bashevkin</strong></div>
+  </div>
+</div>
+
+<!-- SPONSOR LINES — day + week dedications. Either, both, or neither can be present per episode. -->
+<div class="sponsors">
+  <div class="sponsors-inner">
+    <p class="sponsor-line"><span class="sponsor-label">Today</span>Sponsored by <strong>The Smith Family</strong> in memory of <em>Rachel Goldstein, z"l</em>.</p>
+    <p class="sponsor-line"><span class="sponsor-label">This week</span>Sponsored by <strong>Michael and Sarah Cohen</strong> in honor of <em>their grandparents</em>.</p>
   </div>
 </div>
 
