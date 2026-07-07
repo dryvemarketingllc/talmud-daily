@@ -188,10 +188,17 @@
     border-color: var(--burgundy);
   }
   .swatch.observed {
-    background: repeating-linear-gradient(45deg,
-      transparent 0, transparent 3px,
-      rgba(80,14,15,0.15) 3px, rgba(80,14,15,0.15) 6px);
+    background: var(--paper-pure);
     border-color: var(--rule);
+    position: relative;
+  }
+  .swatch.observed::after {
+    content: "";
+    position: absolute;
+    left: 3px; right: 3px; bottom: 3px;
+    height: 4px;
+    background: var(--burgundy);
+    opacity: 0.7;
   }
 
   /* CALENDAR CONTAINER */
@@ -290,10 +297,16 @@
     background: var(--burgundy-tint);
     border-color: rgba(80,14,15,0.3);
   }
-  .day-cell.observed {
-    background: repeating-linear-gradient(45deg,
-      var(--paper-pure) 0, var(--paper-pure) 4px,
-      rgba(80,14,15,0.08) 4px, rgba(80,14,15,0.08) 8px);
+  /* Observed (chol hamoed, chanukah, etc.) — regular day background; the holiday label carries the info */
+  .day-cell.observed { /* no special background; behaves as its base type (program/voices) */ }
+  .day-cell .holiday-observed {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--burgundy);
+    opacity: 0.85;
+    line-height: 1.2;
+    margin-top: 3px;
   }
 
   .day-cell .date {
@@ -500,7 +513,7 @@
   <span class="lg-item"><span class="swatch voices"></span>Voices interview (Fri)</span>
   <span class="lg-item"><span class="swatch weekend"></span>Off (Sat/Sun)</span>
   <span class="lg-item"><span class="swatch paused"></span>Paused (Jewish holiday, no email)</span>
-  <span class="lg-item"><span class="swatch observed"></span>Holiday observed (no pause — verify)</span>
+  <span class="lg-item"><span class="swatch observed"></span>Holiday observed (Chol Hamoed, Chanukah — no pause)</span>
 </div>
 
 <!-- MONTH NAV -->
@@ -600,10 +613,10 @@
     '2026-09-21': { name: 'Yom Kippur', pause: true },
     '2026-09-26': { name: 'Sukkot I', pause: true },
     '2026-09-27': { name: 'Sukkot II', pause: true },
-    '2026-09-28': { name: 'Chol Hamoed', pause: false },
-    '2026-09-29': { name: 'Chol Hamoed', pause: false },
-    '2026-09-30': { name: 'Chol Hamoed', pause: false },
-    '2026-10-01': { name: 'Chol Hamoed', pause: false },
+    '2026-09-28': { name: 'Sukkot III', pause: false },
+    '2026-09-29': { name: 'Sukkot IV', pause: false },
+    '2026-09-30': { name: 'Sukkot V', pause: false },
+    '2026-10-01': { name: 'Sukkot VI', pause: false },
     '2026-10-02': { name: 'Hoshana Rabbah', pause: false },
     '2026-10-03': { name: 'Shemini Atzeret', pause: true },
     '2026-10-04': { name: 'Simchat Torah', pause: true },
@@ -625,10 +638,10 @@
     // Passover (15-22 Nisan) — dates approximate; verify
     '2027-04-01': { name: 'Passover I', pause: true },
     '2027-04-02': { name: 'Passover II', pause: true },
-    '2027-04-03': { name: 'Chol Hamoed', pause: false },
-    '2027-04-04': { name: 'Chol Hamoed', pause: false },
-    '2027-04-05': { name: 'Chol Hamoed', pause: false },
-    '2027-04-06': { name: 'Chol Hamoed', pause: false },
+    '2027-04-03': { name: 'Passover III', pause: false },
+    '2027-04-04': { name: 'Passover IV', pause: false },
+    '2027-04-05': { name: 'Passover V', pause: false },
+    '2027-04-06': { name: 'Passover VI', pause: false },
     '2027-04-07': { name: 'Passover VII', pause: true },
     '2027-04-08': { name: 'Passover VIII', pause: true },
     // Post-Passover
@@ -659,16 +672,23 @@
     return { type: 'program' };
   }
 
-  // Build the days array
+  // Build the days array — sequential Day # spans Mon-Fri (program + voices)
   const days = [];
-  let dailyN = 0, voicesN = 0, pausedN = 0;
+  let sequenceN = 0, dailyN = 0, voicesN = 0, pausedN = 0;
   let d = new Date(START);
   while (d <= END) {
     const info = classifyDay(d);
-    if (info.type === 'program') { dailyN++; info.progNum = dailyN; }
-    if (info.type === 'voices' && !info.observed) { voicesN++; info.progNum = voicesN; }
-    if (info.type === 'voices' && info.observed) { voicesN++; info.progNum = voicesN; } // observed voices still count if not paused
-    if (info.type === 'paused') pausedN++;
+    if (info.type === 'program') {
+      sequenceN++;
+      dailyN++;
+      info.progNum = sequenceN;
+    } else if (info.type === 'voices') {
+      sequenceN++;
+      voicesN++;
+      info.progNum = sequenceN;
+    } else if (info.type === 'paused') {
+      pausedN++;
+    }
     days.push({ date: new Date(d), info });
     d.setDate(d.getDate() + 1);
   }
@@ -711,15 +731,13 @@
       content += `<div class="prog-num">Day ${info.progNum}</div>`;
       if (tract) {
         content += `<div class="tractate">${tract.name}${tract.sub ? `<em>${tract.sub}</em>` : ''}</div>`;
-      } else {
-        content += `<div class="type">Episode</div>`;
       }
     } else if (info.type === 'voices') {
-      content += `<div class="prog-num">Voices</div>`;
+      content += `<div class="prog-num">Day ${info.progNum}</div>`;
       if (tract) {
-        content += `<div class="tractate">${tract.name}${tract.sub ? `<em>${tract.sub}</em>` : ''}</div>`;
+        content += `<div class="tractate">${tract.name}<em>Voices</em></div>`;
       } else {
-        content += `<div class="type">Long-form</div>`;
+        content += `<div class="type">Voices</div>`;
       }
     } else if (info.type === 'weekend') {
       content += `<div class="type">Off</div>`;
@@ -735,9 +753,9 @@
     } else if (info.type === 'post') {
       content += `<div class="type">Post-Siyum</div>`;
     }
-    if (info.holiday && info.type !== 'paused') {
-      const holLine = `<div class="holiday">${info.holiday.name}</div>`;
-      content = content.replace(/<div class="type">.*?<\/div>/, holLine);
+    // For observed (chol hamoed / chanukah / etc.) days, show the holiday name as an italic tag
+    if (info.observed && info.holiday) {
+      content += `<div class="holiday-observed">${info.holiday.name}</div>`;
     }
     cell.innerHTML = content;
     return cell;
