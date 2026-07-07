@@ -181,21 +181,8 @@
     flex-shrink: 0;
   }
   .swatch.program { background: var(--paper-pure); }
-  .swatch.voices {
-    background: var(--paper-pure);
-    border-color: var(--rule);
-    position: relative;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 10px;
-    color: var(--muted);
-    display: inline-flex;
-    align-items: end;
-    justify-content: center;
-    padding-bottom: 2px;
-  }
-  .swatch.voices::after { content: "V"; }
-  .swatch.weekend { background: rgba(0,0,0,0.03); }
+  .swatch.voices { background: rgba(0,0,0,0.04); border-color: rgba(94,92,80,0.20); }
+  .swatch.weekend { background: rgba(0,0,0,0.09); border-color: rgba(94,92,80,0.18); }
   .swatch.paused {
     background: var(--burgundy-tint);
     border-color: var(--burgundy);
@@ -304,9 +291,10 @@
     color: var(--muted);
     opacity: 0.7;
   }
-  .day-cell.weekend { background: rgba(0,0,0,0.03); }
-  /* Friday Voices — same paper-pure background as Mon-Thu; the "Voices" text label carries the distinction */
-  .day-cell.voices { background: var(--paper-pure); border-color: var(--rule); }
+  /* Fri/Voices — subtle light-muted background (a step down from Mon-Thu cream) */
+  .day-cell.voices { background: rgba(0,0,0,0.04); border-color: rgba(94,92,80,0.20); }
+  /* Sat/Sun — deeper muted grey, clearly de-emphasized since no program */
+  .day-cell.weekend { background: rgba(0,0,0,0.09); border-color: rgba(94,92,80,0.18); }
   .day-cell.paused {
     background: var(--burgundy-tint);
     border-color: rgba(80,14,15,0.3);
