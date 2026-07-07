@@ -182,7 +182,7 @@
   }
   .swatch.program { background: var(--paper-pure); }
   .swatch.voices { background: rgba(0,0,0,0.04); border-color: rgba(94,92,80,0.20); }
-  .swatch.weekend { background: rgba(0,0,0,0.09); border-color: rgba(94,92,80,0.18); }
+  .swatch.weekend { background: rgba(23,32,32,0.18); border-color: rgba(23,32,32,0.22); }
   .swatch.paused {
     background: var(--burgundy-tint);
     border-color: var(--burgundy);
@@ -293,8 +293,14 @@
   }
   /* Fri/Voices — subtle light-muted background (a step down from Mon-Thu cream) */
   .day-cell.voices { background: rgba(0,0,0,0.04); border-color: rgba(94,92,80,0.20); }
-  /* Sat/Sun — deeper muted grey, clearly de-emphasized since no program */
-  .day-cell.weekend { background: rgba(0,0,0,0.09); border-color: rgba(94,92,80,0.18); }
+  /* Sat/Sun — dark muted grey, clearly de-emphasized since no program */
+  .day-cell.weekend { background: rgba(23,32,32,0.18); border-color: rgba(23,32,32,0.22); }
+  .day-cell.weekend .date { opacity: 0.55; }
+  .day-cell.weekend .type { opacity: 0.55; }
+  .day-cell.weekend .holiday {
+    color: var(--burgundy);
+    opacity: 0.85;
+  }
   .day-cell.paused {
     background: var(--burgundy-tint);
     border-color: rgba(80,14,15,0.3);
@@ -742,7 +748,12 @@
         content += `<div class="type">Voices</div>`;
       }
     } else if (info.type === 'weekend') {
-      content += `<div class="type">Off</div>`;
+      if (info.holiday) {
+        content += `<div class="holiday">${info.holiday.name}</div>`;
+        content += `<div class="type">Off</div>`;
+      } else {
+        content += `<div class="type">Off</div>`;
+      }
     } else if (info.type === 'paused') {
       content += `<div class="holiday">${info.holiday.name}</div>`;
       if (tract) {
