@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>How well do you know Judaism? — An 18Forty Quiz</title>
+<title>How well do you know Judaism? — A Jewish Literacy Quiz</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Seven questions to test your Jewish literacy. From 18Forty and Talmud Daily.">
+<meta name="description" content="Seven questions to test your Jewish literacy. A quick quiz from Talmud Daily.">
+
+<!-- Open Graph / social share -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="How well do you know Judaism?">
+<meta property="og:description" content="Seven questions. See how you do.">
+<meta property="og:url" content="https://talmuddaily.org/quiz">
+<meta property="og:image" content="tdbrand/quiz-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How well do you know Judaism?">
+<meta name="twitter:description" content="Seven questions. See how you do.">
+<meta name="twitter:image" content="tdbrand/quiz-og.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -52,28 +66,35 @@
 
   /* NAV */
   nav.top {
-    padding: 24px 40px;
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(234,226,208,0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.top .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1240px;
-    margin: 0 auto;
   }
-  nav.top .brand {
-    font-family: var(--sans);
-    font-size: 11px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--burgundy);
-    font-weight: 700;
+  nav.top .wordmark { display: inline-flex; align-items: center; text-decoration: none; line-height: 1; }
+  nav.top .wordmark img { display: block; height: 26px; width: auto; }
+  nav.top .links { display: flex; gap: 26px; align-items: center; font-size: 14px; font-family: var(--sans); }
+  nav.top .links a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+  nav.top .links a:hover { color: var(--burgundy); }
+  nav.top .links .btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 11px 20px;
     text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 1px;
   }
-  nav.top .brand em {
-    color: var(--muted);
-    font-style: normal;
-    font-weight: 500;
-    margin-left: 6px;
-  }
+  nav.top .links .btn:hover { background: var(--burgundy); color: var(--paper); }
   nav.top .exit {
     font-family: var(--sans);
     font-size: 11px;
@@ -470,20 +491,27 @@
 
   /* FOOTER */
   footer.site {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px 40px;
+    margin-top: 80px;
+  }
+  footer.site .inner {
     max-width: 1240px;
     margin: 0 auto;
-    padding: 24px 40px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 24px;
+    gap: 32px;
     flex-wrap: wrap;
     font-family: var(--sans);
-    font-size: 11px;
-    color: var(--muted);
-    border-top: 1px solid var(--rule);
+    font-size: 12px;
+    color: rgba(234,226,208,0.7);
   }
-  footer.site a { color: var(--burgundy); text-decoration: none; font-weight: 600; }
+  footer.site .wordmark { display: inline-flex; align-items: center; text-decoration: none; }
+  footer.site .wordmark img { height: 24px; }
+  footer.site .copyright { text-align: right; }
+  footer.site a { color: var(--paper); text-decoration: none; font-weight: 600; }
   footer.site a:hover { text-decoration: underline; }
 
   @media (max-width: 700px) {
@@ -500,11 +528,21 @@
 </head>
 <body>
 
-<div class="mockup-tag">Mockup · 18Forty Quiz</div>
+<div class="mockup-tag">Mockup · Talmud Daily Quiz</div>
 
 <nav class="top">
-  <a class="brand" href="https://18forty.org">18Forty <em>· A Quiz</em></a>
-  <a class="exit" href="/">Exit ×</a>
+  <div class="inner">
+    <a class="wordmark" href="index.html" aria-label="Talmud Daily home">
+      <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
+    </a>
+    <div class="links">
+      <a href="index.html#talmud">The Talmud</a>
+      <a href="index.html#arc">The Journey</a>
+      <a href="resources.html">Resources</a>
+      <a href="index.html#faq">FAQ</a>
+      <a class="btn" href="index.html#signup">Sign up</a>
+    </div>
+  </div>
 </nav>
 
 <main>
@@ -568,8 +606,13 @@
 </main>
 
 <footer class="site">
-  <span>A quiz from <a href="https://18forty.org">18Forty</a> · A programmatic division of the OU</span>
-  <span>© 2026 18Forty</span>
+  <div class="inner">
+    <a class="wordmark" href="index.html">
+      <img src="tdbrand/wordmark-cream.svg" alt="Talmud Daily">
+    </a>
+    <span>A project of 18Forty</span>
+    <span class="copyright">© 2026 18Forty</span>
+  </div>
 </footer>
 
 <script>
@@ -662,6 +705,17 @@
       body: "No Hebrew required. No prior knowledge assumed. Just ten minutes a day, forty weeks, a plain-English path through the whole Talmud with Dovid Bashevkin. Starts August 24."
     }
   ];
+
+  // Shuffle each question's answer options so the correct one isn't always A.
+  // Fisher-Yates in place. Correct answer is tracked via `.correct`, not index.
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+  QUESTIONS.forEach(q => shuffle(q.a));
 
   // State
   let currentIdx = 0;
@@ -775,16 +829,19 @@
 
   function shareQuiz(e) {
     e.preventDefault();
+    const score = computeScore();
+    const shareText = `I got ${score}/${QUESTIONS.length} on the Talmud Daily Jewish literacy quiz. See how you do.`;
     if (navigator.share) {
       navigator.share({
         title: 'How well do you know Judaism?',
-        text: 'An 18Forty Jewish literacy quiz. See how you do.',
+        text: shareText,
         url: window.location.href
       }).catch(() => {});
     } else {
-      // Fallback: copy link
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        e.target.textContent = 'Link copied ✓';
+      // Fallback: copy score-and-link to clipboard
+      const clipText = `${shareText}\n${window.location.href}`;
+      navigator.clipboard.writeText(clipText).then(() => {
+        e.target.textContent = 'Copied ✓';
         setTimeout(() => { e.target.innerHTML = 'Share it →'; }, 2000);
       });
     }
