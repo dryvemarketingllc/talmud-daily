@@ -106,6 +106,50 @@
   }
   nav.top .exit:hover { color: var(--burgundy); }
 
+  /* Sign-up + hamburger stay together, right side */
+  nav.top .nav-cta { display: flex; align-items: center; gap: 12px; }
+  nav.top .cta-btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 11px 20px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 1px;
+    font-family: var(--sans);
+    border: none;
+    cursor: pointer;
+  }
+  nav.top .cta-btn:hover { background: var(--burgundy); color: var(--paper); }
+  nav.top .hamburger {
+    display: none;
+    background: none;
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    width: 42px; height: 42px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1px;
+  }
+  nav.top .hamburger span,
+  nav.top .hamburger span::before,
+  nav.top .hamburger span::after {
+    display: block;
+    width: 20px; height: 2px;
+    background: var(--ink);
+    transition: transform 0.2s, top 0.2s, opacity 0.2s;
+  }
+  nav.top .hamburger span { position: relative; }
+  nav.top .hamburger span::before,
+  nav.top .hamburger span::after { content: ""; position: absolute; left: 0; }
+  nav.top .hamburger span::before { top: -6px; }
+  nav.top .hamburger span::after  { top: 6px; }
+  nav.top.mobile-open .hamburger span { background: transparent; }
+  nav.top.mobile-open .hamburger span::before { top: 0; transform: rotate(45deg); }
+  nav.top.mobile-open .hamburger span::after  { top: 0; transform: rotate(-45deg); }
+
   /* MAIN STAGE */
   main {
     max-width: 720px;
@@ -514,8 +558,34 @@
   footer.site a { color: var(--paper); text-decoration: none; font-weight: 600; }
   footer.site a:hover { text-decoration: underline; }
 
+  @media (max-width: 900px) {
+    nav.top .inner { position: relative; }
+    nav.top .links {
+      display: none;
+      position: absolute;
+      top: calc(100% + 1px); left: 0; right: 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      box-shadow: 0 8px 20px rgba(23,32,32,0.08);
+      padding: 8px 24px 20px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      z-index: 40;
+    }
+    nav.top.mobile-open .links { display: flex; }
+    nav.top .links a {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 17px;
+      color: var(--ink);
+    }
+    nav.top .links a:last-child { border-bottom: none; }
+    nav.top .hamburger { display: inline-flex; }
+  }
   @media (max-width: 700px) {
-    nav.top, main, footer.site { padding-left: 24px; padding-right: 24px; }
+    nav.top .inner, main, footer.site .inner { padding-left: 24px; padding-right: 24px; }
+    nav.top .inner { padding-top: 14px; padding-bottom: 14px; }
     main { padding-top: 20px; }
     h1.intro-h { font-size: clamp(36px, 8vw, 52px); }
     h2.q-text { font-size: clamp(26px, 6vw, 34px); }
@@ -523,6 +593,7 @@
     .answer { font-size: 16px; padding: 16px 18px; }
     .cta-row { flex-direction: column; align-items: stretch; }
     .btn-primary { justify-content: center; }
+    nav.top .cta-btn { padding: 10px 16px; font-size: 12px; }
   }
 </style>
 </head>
@@ -530,7 +601,7 @@
 
 <div class="mockup-tag">Mockup · Talmud Daily Quiz</div>
 
-<nav class="top">
+<nav class="top" id="siteNav">
   <div class="inner">
     <a class="wordmark" href="index.html" aria-label="Talmud Daily home">
       <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
@@ -540,7 +611,10 @@
       <a href="index.html#arc">The Journey</a>
       <a href="resources.html">Resources</a>
       <a href="index.html#faq">FAQ</a>
-      <a class="btn" href="index.html#signup">Sign up</a>
+    </div>
+    <div class="nav-cta">
+      <a class="cta-btn" href="index.html#signup">Sign up</a>
+      <button class="hamburger" aria-label="Open menu" aria-expanded="false" onclick="toggleNav(this)"><span></span></button>
     </div>
   </div>
 </nav>
@@ -616,6 +690,24 @@
 </footer>
 
 <script>
+  // Mobile hamburger toggle
+  function toggleNav(btn) {
+    const nav = document.getElementById('siteNav');
+    const open = nav.classList.toggle('mobile-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  // Close drawer when tapping any link inside it
+  document.addEventListener('click', (e) => {
+    const nav = document.getElementById('siteNav');
+    if (!nav || !nav.classList.contains('mobile-open')) return;
+    if (e.target.closest('nav.top .links a')) {
+      nav.classList.remove('mobile-open');
+      const h = nav.querySelector('.hamburger');
+      if (h) { h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-label', 'Open menu'); }
+    }
+  });
+
   // Quiz data
   const QUESTIONS = [
     {

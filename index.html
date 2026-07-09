@@ -84,6 +84,35 @@
   nav.top .links { display: flex; gap: 32px; align-items: center; font-size: 14px; font-family: var(--sans); }
   nav.top .links a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
   nav.top .links a:hover { color: var(--burgundy); }
+  /* Sign-up + hamburger, always visible on right */
+  nav.top .nav-cta { display: flex; align-items: center; gap: 12px; }
+  nav.top .hamburger {
+    display: none;
+    background: none;
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    width: 42px; height: 42px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1px;
+  }
+  nav.top .hamburger span,
+  nav.top .hamburger span::before,
+  nav.top .hamburger span::after {
+    display: block;
+    width: 20px; height: 2px;
+    background: var(--ink);
+    transition: transform 0.2s, top 0.2s, opacity 0.2s;
+  }
+  nav.top .hamburger span { position: relative; }
+  nav.top .hamburger span::before,
+  nav.top .hamburger span::after { content: ""; position: absolute; left: 0; }
+  nav.top .hamburger span::before { top: -6px; }
+  nav.top .hamburger span::after  { top: 6px; }
+  nav.top.mobile-open .hamburger span { background: transparent; }
+  nav.top.mobile-open .hamburger span::before { top: 0; transform: rotate(45deg); }
+  nav.top.mobile-open .hamburger span::after  { top: 0; transform: rotate(-45deg); }
   .btn {
     display: inline-block;
     background: var(--ink);
@@ -1165,7 +1194,30 @@
 
   /* RESPONSIVE */
   @media (max-width: 880px) {
-    nav.top .links a:not(.btn) { display: none; }
+    nav.top .inner { position: relative; padding: 16px 24px; }
+    nav.top .links {
+      display: none;
+      position: absolute;
+      top: calc(100% + 1px); left: 0; right: 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      box-shadow: 0 8px 20px rgba(23,32,32,0.08);
+      padding: 8px 24px 20px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      z-index: 40;
+    }
+    nav.top.mobile-open .links { display: flex; }
+    nav.top .links a {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 17px;
+      color: var(--ink);
+    }
+    nav.top .links a:last-child { border-bottom: none; }
+    nav.top .hamburger { display: inline-flex; }
+    nav.top .nav-cta .btn { padding: 10px 16px; font-size: 12px; }
     .hero { padding: 56px 0 64px; }
     .hero-inner { padding: 0 24px; }
     .hero-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1204,7 +1256,7 @@
 <div class="mockup-tag">Mockup · Final brand</div>
 
 <!-- NAV -->
-<nav class="top">
+<nav class="top" id="siteNav">
   <div class="inner">
     <a class="wordmark" href="#" aria-label="Talmud Daily home">
       <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
@@ -1217,10 +1269,31 @@
       <a href="#ambassadors">Ambassadors</a>
       <a href="resources.html">Resources</a>
       <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
       <button type="button" class="btn" onclick="openSignup()">Sign up</button>
+      <button class="hamburger" aria-label="Open menu" aria-expanded="false" onclick="toggleNav(this)"><span></span></button>
     </div>
   </div>
 </nav>
+
+<script>
+  function toggleNav(btn) {
+    const nav = document.getElementById('siteNav');
+    const open = nav.classList.toggle('mobile-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  document.addEventListener('click', (e) => {
+    const nav = document.getElementById('siteNav');
+    if (!nav || !nav.classList.contains('mobile-open')) return;
+    if (e.target.closest('nav.top .links a')) {
+      nav.classList.remove('mobile-open');
+      const h = nav.querySelector('.hamburger');
+      if (h) { h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-label', 'Open menu'); }
+    }
+  });
+</script>
 
 <!-- HERO -->
 <header class="hero">

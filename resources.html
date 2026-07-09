@@ -84,6 +84,36 @@
   }
   nav.top .btn:hover { background: var(--burgundy); color: var(--paper); }
 
+  /* Sign-up + hamburger stay together */
+  nav.top .nav-cta { display: flex; align-items: center; gap: 12px; }
+  nav.top .hamburger {
+    display: none;
+    background: none;
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    width: 42px; height: 42px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1px;
+  }
+  nav.top .hamburger span,
+  nav.top .hamburger span::before,
+  nav.top .hamburger span::after {
+    display: block;
+    width: 20px; height: 2px;
+    background: var(--ink);
+    transition: transform 0.2s, top 0.2s, opacity 0.2s;
+  }
+  nav.top .hamburger span { position: relative; }
+  nav.top .hamburger span::before,
+  nav.top .hamburger span::after { content: ""; position: absolute; left: 0; }
+  nav.top .hamburger span::before { top: -6px; }
+  nav.top .hamburger span::after  { top: 6px; }
+  nav.top.mobile-open .hamburger span { background: transparent; }
+  nav.top.mobile-open .hamburger span::before { top: 0; transform: rotate(45deg); }
+  nav.top.mobile-open .hamburger span::after  { top: 0; transform: rotate(-45deg); }
+
   /* HERO — cream, editorial */
   .hero {
     max-width: 1240px;
@@ -427,8 +457,31 @@
 
   /* RESPONSIVE */
   @media (max-width: 900px) {
-    nav.top .links a { display: none; }
-    nav.top .links .btn { display: inline-flex; }
+    nav.top .inner { position: relative; padding: 14px 24px; }
+    nav.top .links {
+      display: none;
+      position: absolute;
+      top: calc(100% + 1px); left: 0; right: 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      box-shadow: 0 8px 20px rgba(23,32,32,0.08);
+      padding: 8px 24px 20px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      z-index: 40;
+    }
+    nav.top.mobile-open .links { display: flex; }
+    nav.top .links a {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 17px;
+      color: var(--ink);
+    }
+    nav.top .links a:last-child { border-bottom: none; }
+    nav.top .links a.active { border-bottom: 1px solid var(--rule); padding-bottom: 16px; }
+    nav.top .hamburger { display: inline-flex; }
+    nav.top .btn { padding: 10px 16px; font-size: 12px; }
     .hero, .section-block, .sefaria-band, footer.site { padding-left: 24px; padding-right: 24px; }
     .card-grid { grid-template-columns: 1fr; }
     .card-grid.three { grid-template-columns: 1fr; }
@@ -445,7 +498,7 @@
 <div class="mockup-tag">Mockup · Resources page</div>
 
 <!-- NAV -->
-<nav class="top">
+<nav class="top" id="siteNav">
   <div class="inner">
     <a class="wordmark" href="index.html" aria-label="Talmud Daily home">
       <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
@@ -456,10 +509,31 @@
       <a href="index.html#rhythm">How It Works</a>
       <a href="resources.html" class="active">Resources</a>
       <a href="index.html#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
       <button type="button" class="btn" onclick="location.href='/#signup'">Sign up</button>
+      <button class="hamburger" aria-label="Open menu" aria-expanded="false" onclick="toggleNav(this)"><span></span></button>
     </div>
   </div>
 </nav>
+
+<script>
+  function toggleNav(btn) {
+    const nav = document.getElementById('siteNav');
+    const open = nav.classList.toggle('mobile-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  document.addEventListener('click', (e) => {
+    const nav = document.getElementById('siteNav');
+    if (!nav || !nav.classList.contains('mobile-open')) return;
+    if (e.target.closest('nav.top .links a')) {
+      nav.classList.remove('mobile-open');
+      const h = nav.querySelector('.hamburger');
+      if (h) { h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-label', 'Open menu'); }
+    }
+  });
+</script>
 
 <!-- HERO -->
 <section class="hero">
