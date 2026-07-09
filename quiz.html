@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>How well do you know Judaism? — An 18Forty Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Seven questions to test your Jewish literacy. From 18Forty and Talmud Daily.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #172020;
+    --ink-soft: #2A2A2A;
+    --paper: #EAE2D0;
+    --paper-pure: #F2EDDF;
+    --burgundy: #500E0F;
+    --burgundy-deep: #3D0A0B;
+    --sage: #A7A885;
+    --muted: #5E5C50;
+    --rule: #C9BFA6;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+    --sans: "Hind", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.55;
+    font-size: 17px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mockup-tag {
+    position: fixed;
+    bottom: 12px; left: 12px;
+    background: var(--burgundy);
+    color: var(--paper);
+    padding: 6px 10px;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 100;
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  /* NAV */
+  nav.top {
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  nav.top .brand {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  nav.top .brand em {
+    color: var(--muted);
+    font-style: normal;
+    font-weight: 500;
+    margin-left: 6px;
+  }
+  nav.top .exit {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav.top .exit:hover { color: var(--burgundy); }
+
+  /* MAIN STAGE */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+    min-height: 70vh;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.3s ease-out; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* INTRO SCREEN */
+  .kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 700;
+    margin-bottom: 28px;
+  }
+  h1.intro-h {
+    font-family: var(--serif);
+    font-size: clamp(44px, 6vw, 76px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin-bottom: 24px;
+    max-width: 20ch;
+  }
+  h1.intro-h em { font-style: italic; }
+  .intro-lede {
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--muted);
+    max-width: 44ch;
+    margin-bottom: 44px;
+  }
+  .intro-meta {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+  .intro-meta .item { display: flex; align-items: center; gap: 8px; }
+  .intro-meta .item .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--burgundy); display: inline-block;
+  }
+
+  /* PROGRESS DOTS */
+  .progress {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 40px;
+  }
+  .progress .dot {
+    flex: 1;
+    height: 3px;
+    background: var(--rule);
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .progress .dot.filled { background: var(--burgundy); }
+
+  /* QUESTION SCREEN */
+  .q-num {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .q-num em { color: var(--burgundy); font-style: normal; font-weight: 700; }
+  h2.q-text {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 40px;
+    max-width: 24ch;
+  }
+  h2.q-text em { font-style: italic; }
+
+  .answers {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .answer {
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 20px 24px;
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.35;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .answer:hover {
+    border-color: var(--burgundy);
+    color: var(--burgundy);
+  }
+  .answer .letter {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    font-weight: 600;
+    background: transparent;
+    border: 1px solid var(--rule);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .answer:hover .letter {
+    color: var(--burgundy);
+    border-color: var(--burgundy);
+  }
+  .answer.selected {
+    background: var(--burgundy);
+    color: var(--paper);
+    border-color: var(--burgundy);
+  }
+  .answer.selected .letter {
+    background: var(--paper);
+    color: var(--burgundy);
+    border-color: var(--paper);
+  }
+  .answer.correct {
+    background: rgba(167,168,133,0.2);
+    border-color: var(--sage);
+    color: var(--ink);
+  }
+  .answer.correct .letter {
+    background: var(--sage);
+    color: var(--ink);
+    border-color: var(--sage);
+  }
+  .answer.incorrect {
+    background: rgba(80,14,15,0.08);
+    border-color: rgba(80,14,15,0.4);
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: rgba(80,14,15,0.4);
+  }
+  .answer[disabled] { cursor: default; }
+
+  .q-explain {
+    margin-top: 28px;
+    padding: 20px 24px;
+    background: var(--paper-pure);
+    border-left: 3px solid var(--burgundy);
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.5;
+    display: none;
+  }
+  .q-explain.show { display: block; animation: fadeIn 0.3s ease-out; }
+  .q-explain em { font-style: italic; color: var(--burgundy); }
+
+  .q-nav {
+    margin-top: 32px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .q-nav .next {
+    background: var(--burgundy);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: none;
+    padding: 16px 30px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-radius: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .q-nav .next:hover { background: var(--ink); }
+  .q-nav .next svg { width: 12px; height: 12px; }
+  .q-nav .next[disabled] {
+    background: var(--rule);
+    color: var(--muted);
+    cursor: default;
+  }
+
+  /* RESULT SCREEN */
+  .result-band {
+    background: var(--burgundy);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+    padding: 56px 48px;
+    margin: 0 -40px 40px;
+  }
+  .result-band .watermark {
+    position: absolute;
+    right: -40px; top: 50%;
+    transform: translateY(-50%);
+    width: 320px; height: 400px;
+    background: url("tdbrand/monogram-cream.svg") no-repeat center/contain;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+  .result-band .inner { position: relative; z-index: 1; }
+  .score-line {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .score-line em { color: var(--paper); font-style: normal; font-weight: 700; font-size: 14px; }
+  h1.result-h {
+    font-family: var(--serif);
+    font-size: clamp(38px, 5vw, 60px);
+    font-weight: 400;
+    line-height: 1.0;
+    color: var(--paper);
+    margin-bottom: 24px;
+    max-width: 20ch;
+  }
+  h1.result-h em { font-style: italic; }
+  .result-body {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--paper);
+    opacity: 0.92;
+    max-width: 46ch;
+  }
+  .result-body em { font-style: italic; }
+
+  .cta-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  .btn-primary {
+    background: var(--burgundy);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: none;
+    padding: 20px 36px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-radius: 1px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+  }
+  .btn-primary:hover { background: var(--ink); }
+  .btn-primary svg { width: 14px; height: 14px; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    padding: 20px 8px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 600;
+  }
+  .btn-ghost:hover { color: var(--burgundy); }
+
+  .share-row {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .share-row .share-cta {
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 12px;
+    border-bottom: 1px solid var(--burgundy);
+    padding-bottom: 2px;
+  }
+
+  /* Question review at bottom of results */
+  .review {
+    margin-top: 40px;
+  }
+  .review-h {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .review-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .review-item:last-child { border-bottom: none; }
+  .review-item .rq {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1.35;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .review-item .mark {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    color: var(--paper);
+  }
+  .review-item .mark.right { background: var(--sage); color: var(--ink); }
+  .review-item .mark.wrong { background: var(--burgundy); }
+  .review-item .ra {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .review-item .ra strong { color: var(--ink); font-weight: 500; font-style: normal; }
+
+  /* FOOTER */
+  footer.site {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 24px 40px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+  }
+  footer.site a { color: var(--burgundy); text-decoration: none; font-weight: 600; }
+  footer.site a:hover { text-decoration: underline; }
+
+  @media (max-width: 700px) {
+    nav.top, main, footer.site { padding-left: 24px; padding-right: 24px; }
+    main { padding-top: 20px; }
+    h1.intro-h { font-size: clamp(36px, 8vw, 52px); }
+    h2.q-text { font-size: clamp(26px, 6vw, 34px); }
+    .result-band { margin: 0 -24px 32px; padding: 40px 24px; }
+    .answer { font-size: 16px; padding: 16px 18px; }
+    .cta-row { flex-direction: column; align-items: stretch; }
+    .btn-primary { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-tag">Mockup · 18Forty Quiz</div>
+
+<nav class="top">
+  <a class="brand" href="https://18forty.org">18Forty <em>· A Quiz</em></a>
+  <a class="exit" href="/">Exit ×</a>
+</nav>
+
+<main>
+
+  <!-- SCREEN 1 · INTRO -->
+  <section class="screen active" id="screen-intro">
+    <div class="kicker">A Jewish Literacy Quiz</div>
+    <h1 class="intro-h">How well do you know <em>Judaism</em>?</h1>
+    <p class="intro-lede">Seven questions. No Hebrew required. Some easy, some not. See how you do.</p>
+    <div class="intro-meta">
+      <div class="item"><span class="dot"></span>~2 minutes</div>
+      <div class="item">7 questions</div>
+      <div class="item">Multiple choice</div>
+    </div>
+    <button class="btn-primary" onclick="showScreen('question'); renderQuestion();">
+      Start the quiz
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </section>
+
+  <!-- SCREEN 2 · QUESTION -->
+  <section class="screen" id="screen-question">
+    <div class="progress" id="progress"></div>
+    <div class="q-num" id="q-num"></div>
+    <h2 class="q-text" id="q-text"></h2>
+    <div class="answers" id="answers"></div>
+    <div class="q-explain" id="q-explain"></div>
+    <div class="q-nav">
+      <button class="next" id="next-btn" disabled onclick="nextQuestion()">
+        <span id="next-label">Next question</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- SCREEN 3 · RESULT -->
+  <section class="screen" id="screen-result">
+    <div class="result-band">
+      <div class="watermark"></div>
+      <div class="inner">
+        <div class="score-line">You got <em id="r-score">— / 7</em></div>
+        <h1 class="result-h" id="r-title"></h1>
+        <p class="result-body" id="r-body"></p>
+      </div>
+    </div>
+    <div class="cta-row">
+      <a class="btn-primary" href="https://talmuddaily.org" target="_blank" rel="noopener">
+        Sign up for Talmud Daily
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <button class="btn-ghost" onclick="restart()">Retake the quiz</button>
+    </div>
+
+    <div class="share-row">
+      Know someone who'd take this?
+      <a class="share-cta" href="#" onclick="shareQuiz(event)">Share it →</a>
+    </div>
+
+    <div class="review" id="review"></div>
+  </section>
+</main>
+
+<footer class="site">
+  <span>A quiz from <a href="https://18forty.org">18Forty</a> · A programmatic division of the OU</span>
+  <span>© 2026 18Forty</span>
+</footer>
+
+<script>
+  // Quiz data
+  const QUESTIONS = [
+    {
+      q: "Which of the following is a book of the Torah?",
+      a: [
+        { text: "Bereishit (Genesis)", correct: true },
+        { text: "Tehillim (Psalms)" },
+        { text: "Kohelet (Ecclesiastes)" },
+        { text: "Iyov (Job)" }
+      ],
+      explain: "The Torah — the Five Books of Moses — is <em>Bereishit</em> (Genesis), <em>Shemot</em> (Exodus), <em>Vayikra</em> (Leviticus), <em>Bamidbar</em> (Numbers), and <em>Devarim</em> (Deuteronomy). Tehillim, Kohelet, and Iyov are all part of Ketuvim (Writings) — the third section of the Hebrew Bible."
+    },
+    {
+      q: "What is the Mishnah?",
+      a: [
+        { text: "The core code of Jewish oral law, compiled around 200 CE", correct: true },
+        { text: "A collection of Jewish folktales from the Middle Ages" },
+        { text: "Rashi's commentary on the Torah" },
+        { text: "The prayer book used on Yom Kippur" }
+      ],
+      explain: "The Mishnah is the foundational text of the Oral Torah — a legal code redacted by Rabbi Yehuda HaNasi around 200 CE. It's the substrate the Gemara is built on top of. Together, they make the Talmud."
+    },
+    {
+      q: "When is the traditional Jewish New Year?",
+      a: [
+        { text: "Rosh Hashanah, in the fall", correct: true },
+        { text: "Passover, in the spring" },
+        { text: "Yom Kippur, ten days after Rosh Hashanah" },
+        { text: "Tu B'Shevat, in the winter" }
+      ],
+      explain: "<em>Rosh Hashanah</em> — literally, \"head of the year\" — falls in the fall (usually September or October). It marks the beginning of the Jewish calendar year, though the biblical year technically starts in Nisan (the spring)."
+    },
+    {
+      q: "Who is traditionally considered the redactor of the Mishnah?",
+      a: [
+        { text: "Rabbi Yehuda HaNasi", correct: true },
+        { text: "Rashi" },
+        { text: "The Rambam (Maimonides)" },
+        { text: "The Vilna Gaon" }
+      ],
+      explain: "Rabbi Yehuda HaNasi — often called simply \"Rebbe\" — compiled the Mishnah around 200 CE in the Galilee. Rashi (11th c. France), Rambam (12th c. Spain/Egypt), and the Vilna Gaon (18th c. Lithuania) all came centuries later."
+    },
+    {
+      q: "Which of the following is <em>not</em> one of the six sedarim (orders) of the Mishnah?",
+      a: [
+        { text: "Yeshiva", correct: true },
+        { text: "Zeraim (Agriculture)" },
+        { text: "Moed (Festivals)" },
+        { text: "Nashim (Women / Family Law)" }
+      ],
+      explain: "The six orders of the Mishnah are <em>Zeraim, Moed, Nashim, Nezikin, Kodashim,</em> and <em>Tahoros</em> — a full map of Jewish law from agriculture to purity. \"Yeshiva\" is a place of study, not a category of the Mishnah."
+    },
+    {
+      q: "What's the difference between halacha and aggadah?",
+      a: [
+        { text: "Halacha is law; aggadah is narrative, story, and theology", correct: true },
+        { text: "Halacha is Ashkenazi; aggadah is Sephardic" },
+        { text: "Halacha is Talmudic; aggadah is biblical" },
+        { text: "They mean the same thing" }
+      ],
+      explain: "The Talmud speaks in two registers. <em>Halacha</em> is the legal reasoning — what one is required, permitted, or forbidden to do. <em>Aggadah</em> is everything else — narrative, ethical teaching, theology, mysticism, medical folklore, jokes. Both are woven together on almost every page."
+    },
+    {
+      q: "Which tractate is traditionally learned first when someone begins studying Talmud?",
+      a: [
+        { text: "Brachos — the tractate of blessings", correct: true },
+        { text: "Sanhedrin — the tractate of courts" },
+        { text: "Bava Metzia — the tractate of civil law" },
+        { text: "Shabbos — the tractate of the Sabbath" }
+      ],
+      explain: "<em>Brachos</em> — the opening tractate of the six orders — is where the Talmud begins. It's about blessings, prayer, and the shape of the ordinary day. It's also where Talmud Daily begins on August 24, 2026."
+    }
+  ];
+
+  // Result tiers
+  const RESULTS = [
+    { min: 6, max: 7,
+      title: "The rabbis would be <em>impressed</em>.",
+      body: "But here's the thing: there's a difference between knowing about Judaism and sitting with it. Talmud Daily is forty weeks of the second kind — the Talmud, in plain English, ten minutes a day. Starts August 24."
+    },
+    { min: 3, max: 5,
+      title: "You've got the <em>foundation</em>.",
+      body: "The Talmud is where the questions get interesting — the arguments, the stories, the reasoning that made this book the anchor of Jewish thought for 1,500 years. Ten minutes a day, forty weeks. Starts August 24."
+    },
+    { min: 0, max: 2,
+      title: "Then Talmud Daily is <em>for you</em>.",
+      body: "No Hebrew required. No prior knowledge assumed. Just ten minutes a day, forty weeks, a plain-English path through the whole Talmud with Dovid Bashevkin. Starts August 24."
+    }
+  ];
+
+  // State
+  let currentIdx = 0;
+  let answers = new Array(QUESTIONS.length).fill(null); // stores selected answer index per question
+
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderQuestion() {
+    const q = QUESTIONS[currentIdx];
+    // Progress dots
+    const progress = document.getElementById('progress');
+    progress.innerHTML = '';
+    for (let i = 0; i < QUESTIONS.length; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (i <= currentIdx) dot.classList.add('filled');
+      progress.appendChild(dot);
+    }
+    // Question number
+    document.getElementById('q-num').innerHTML = `Question <em>${currentIdx + 1}</em> of ${QUESTIONS.length}`;
+    document.getElementById('q-text').innerHTML = q.q;
+    // Answers
+    const wrap = document.getElementById('answers');
+    wrap.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D', 'E'];
+    q.a.forEach((ans, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'answer';
+      btn.innerHTML = `<span class="letter">${letters[i]}</span><span>${ans.text}</span>`;
+      btn.addEventListener('click', () => selectAnswer(i, btn));
+      wrap.appendChild(btn);
+    });
+    // Reset explanation + next button
+    document.getElementById('q-explain').classList.remove('show');
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.disabled = true;
+    document.getElementById('next-label').textContent = currentIdx === QUESTIONS.length - 1 ? 'See your results' : 'Next question';
+  }
+
+  function selectAnswer(idx, btn) {
+    if (answers[currentIdx] !== null) return; // already answered
+    answers[currentIdx] = idx;
+    const q = QUESTIONS[currentIdx];
+    // Mark all answers with correct/incorrect state
+    document.querySelectorAll('#answers .answer').forEach((a, i) => {
+      a.setAttribute('disabled', 'true');
+      if (q.a[i].correct) a.classList.add('correct');
+      else if (i === idx) a.classList.add('incorrect');
+    });
+    // Show explanation
+    const exp = document.getElementById('q-explain');
+    exp.innerHTML = q.explain;
+    exp.classList.add('show');
+    // Enable next
+    document.getElementById('next-btn').disabled = false;
+  }
+
+  function nextQuestion() {
+    if (currentIdx < QUESTIONS.length - 1) {
+      currentIdx++;
+      renderQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function computeScore() {
+    let score = 0;
+    QUESTIONS.forEach((q, i) => {
+      if (answers[i] !== null && q.a[answers[i]].correct) score++;
+    });
+    return score;
+  }
+
+  function showResults() {
+    const score = computeScore();
+    document.getElementById('r-score').textContent = `${score} / ${QUESTIONS.length}`;
+    const tier = RESULTS.find(r => score >= r.min && score <= r.max);
+    document.getElementById('r-title').innerHTML = tier.title;
+    document.getElementById('r-body').innerHTML = tier.body;
+    // Build review
+    const review = document.getElementById('review');
+    review.innerHTML = '<div class="review-h">Question by question</div>';
+    QUESTIONS.forEach((q, i) => {
+      const chosen = answers[i];
+      const correctIdx = q.a.findIndex(a => a.correct);
+      const isRight = chosen === correctIdx;
+      const item = document.createElement('div');
+      item.className = 'review-item';
+      item.innerHTML = `
+        <div class="rq">
+          <span class="mark ${isRight ? 'right' : 'wrong'}">${isRight ? '✓' : '✗'}</span>
+          <span>${q.q}</span>
+        </div>
+        <div class="ra">Answer: <strong>${q.a[correctIdx].text}</strong></div>
+      `;
+      review.appendChild(item);
+    });
+    showScreen('result');
+  }
+
+  function restart() {
+    currentIdx = 0;
+    answers = new Array(QUESTIONS.length).fill(null);
+    showScreen('intro');
+  }
+
+  function shareQuiz(e) {
+    e.preventDefault();
+    if (navigator.share) {
+      navigator.share({
+        title: 'How well do you know Judaism?',
+        text: 'An 18Forty Jewish literacy quiz. See how you do.',
+        url: window.location.href
+      }).catch(() => {});
+    } else {
+      // Fallback: copy link
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        e.target.textContent = 'Link copied ✓';
+        setTimeout(() => { e.target.innerHTML = 'Share it →'; }, 2000);
+      });
+    }
+  }
+</script>
+
+</body>
+</html>
