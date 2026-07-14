@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  TALMUD DAILY · BLANK PAGE TEMPLATE
+  ============================================================
+  Duplicate this file for any new page — forms, thank-you pages,
+  event landings, announcement pages, whatever. The nav, footer,
+  fonts, brand tokens, and mobile hamburger are already wired.
+
+  TO CUSTOMIZE:
+  1. Change <title> and <meta description> in the <head>.
+  2. Update the OG image/description tags if this page will be shared.
+  3. Replace the [HERO] block with your page title + lede.
+  4. Replace the [CONTENT] block with your actual content. A working
+     example contact form is included as a starting point — remove
+     or restyle as needed.
+  5. Delete the .mockup-tag div once this becomes a real page.
+  6. If the page needs its own scripts, add them just before </body>.
+  ============================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Page Title — Talmud Daily</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Short one-sentence page description.">
+
+<!-- Open Graph / social share — update per page -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Page Title — Talmud Daily">
+<meta property="og:description" content="Short one-sentence page description.">
+<meta property="og:image" content="tdbrand/quiz-og.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     BRAND TOKENS — shared across all Talmud Daily pages
+     ============================================================ */
+  :root {
+    --ink: #172020;
+    --ink-soft: #2A2A2A;
+    --paper: #EAE2D0;
+    --paper-pure: #F2EDDF;
+    --burgundy: #500E0F;
+    --burgundy-deep: #3D0A0B;
+    --sage: #A7A885;
+    --muted: #5E5C50;
+    --rule: #C9BFA6;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+    --sans: "Hind", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.55;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Mockup tag — DELETE once this becomes a real page */
+  .mockup-tag {
+    position: fixed;
+    bottom: 12px; left: 12px;
+    background: var(--burgundy);
+    color: var(--paper);
+    padding: 6px 10px;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 100;
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  /* ============================================================
+     NAV — with mobile hamburger (Sign up stays outside drawer)
+     ============================================================ */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(234,226,208,0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.top .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav.top .wordmark { display: inline-flex; align-items: center; text-decoration: none; line-height: 1; }
+  nav.top .wordmark img { display: block; height: 26px; width: auto; }
+  nav.top .links { display: flex; gap: 26px; align-items: center; font-size: 14px; font-family: var(--sans); }
+  nav.top .links a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+  nav.top .links a:hover { color: var(--burgundy); }
+
+  nav.top .nav-cta { display: flex; align-items: center; gap: 12px; }
+  nav.top .cta-btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 11px 20px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 1px;
+    font-family: var(--sans);
+    border: none;
+    cursor: pointer;
+  }
+  nav.top .cta-btn:hover { background: var(--burgundy); color: var(--paper); }
+  nav.top .hamburger {
+    display: none;
+    background: none;
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    width: 42px; height: 42px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1px;
+  }
+  nav.top .hamburger span,
+  nav.top .hamburger span::before,
+  nav.top .hamburger span::after {
+    display: block;
+    width: 20px; height: 2px;
+    background: var(--ink);
+    transition: transform 0.2s, top 0.2s, opacity 0.2s;
+  }
+  nav.top .hamburger span { position: relative; }
+  nav.top .hamburger span::before,
+  nav.top .hamburger span::after { content: ""; position: absolute; left: 0; }
+  nav.top .hamburger span::before { top: -6px; }
+  nav.top .hamburger span::after  { top: 6px; }
+  nav.top.mobile-open .hamburger span { background: transparent; }
+  nav.top.mobile-open .hamburger span::before { top: 0; transform: rotate(45deg); }
+  nav.top.mobile-open .hamburger span::after  { top: 0; transform: rotate(-45deg); }
+
+  /* ============================================================
+     PAGE LAYOUT — hero + content area
+     ============================================================ */
+  main {
+    flex: 1;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 96px 48px 120px;
+    width: 100%;
+  }
+
+  /* Hero band — kicker · title · lede */
+  .hero {
+    max-width: 720px;
+    margin-bottom: 64px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero .kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(48px, 6.5vw, 84px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: 28px;
+  }
+  .hero h1 em { font-style: italic; }
+  .hero .lede {
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  /* Content section — put whatever you need inside .content */
+  .content {
+    max-width: 600px;
+  }
+  .content h2 {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 48px 0 16px;
+  }
+  .content h2:first-child { margin-top: 0; }
+  .content p {
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  .content p em { font-style: italic; }
+  .content a { color: var(--burgundy); font-weight: 500; text-decoration: none; border-bottom: 1px solid rgba(80,14,15,0.4); }
+  .content a:hover { border-bottom-color: var(--burgundy); }
+
+  /* ============================================================
+     FORM PATTERN — reusable input/textarea/select/button styles
+     ============================================================ */
+  form.td-form {
+    max-width: 520px;
+    margin-top: 32px;
+  }
+  form.td-form .field {
+    margin-bottom: 22px;
+  }
+  form.td-form label {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  form.td-form label .req { color: var(--burgundy); margin-left: 3px; }
+  form.td-form input[type="text"],
+  form.td-form input[type="email"],
+  form.td-form input[type="tel"],
+  form.td-form input[type="url"],
+  form.td-form select,
+  form.td-form textarea {
+    width: 100%;
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 14px 16px;
+    font-family: var(--sans);
+    font-size: 16px;
+    color: var(--ink);
+    border-radius: 1px;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.15s;
+  }
+  form.td-form input:focus,
+  form.td-form select:focus,
+  form.td-form textarea:focus {
+    outline: none;
+    border-color: var(--burgundy);
+  }
+  form.td-form textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.5;
+    font-family: var(--sans);
+  }
+  form.td-form .field-hint {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  form.td-form .checkbox,
+  form.td-form .radio {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  form.td-form .checkbox input,
+  form.td-form .radio input {
+    margin-top: 3px;
+    accent-color: var(--burgundy);
+  }
+  form.td-form .submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 32px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  form.td-form .submit:hover { background: var(--burgundy); }
+  form.td-form .submit svg { width: 14px; height: 14px; }
+
+  /* ============================================================
+     BUTTON UTILITIES — reuse anywhere
+     ============================================================ */
+  .btn-primary {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 32px;
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--burgundy); }
+  .btn-ghost {
+    display: inline-block;
+    background: transparent;
+    color: var(--ink);
+    padding: 15px 30px;
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    border-radius: 1px;
+    cursor: pointer;
+  }
+  .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+
+  /* ============================================================
+     FOOTER — standard site footer
+     ============================================================ */
+  footer.site {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px 40px;
+    margin-top: auto;
+  }
+  footer.site .inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: rgba(234,226,208,0.7);
+  }
+  footer.site .wordmark { display: inline-flex; align-items: center; text-decoration: none; }
+  footer.site .wordmark img { height: 24px; }
+  footer.site .copyright { text-align: right; }
+
+  /* ============================================================
+     RESPONSIVE — mobile hamburger drawer + tighter padding
+     ============================================================ */
+  @media (max-width: 900px) {
+    nav.top .inner { position: relative; padding: 14px 24px; }
+    nav.top .links {
+      display: none;
+      position: absolute;
+      top: calc(100% + 1px); left: 0; right: 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      box-shadow: 0 8px 20px rgba(23,32,32,0.08);
+      padding: 8px 24px 20px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      z-index: 40;
+    }
+    nav.top.mobile-open .links { display: flex; }
+    nav.top .links a {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 17px;
+      color: var(--ink);
+    }
+    nav.top .links a:last-child { border-bottom: none; }
+    nav.top .hamburger { display: inline-flex; }
+    nav.top .cta-btn { padding: 10px 16px; font-size: 12px; }
+  }
+  @media (max-width: 700px) {
+    main { padding: 56px 24px 80px; }
+    .hero { margin-bottom: 40px; padding-bottom: 28px; }
+    .hero h1 { font-size: clamp(38px, 9vw, 56px); }
+    .hero .lede { font-size: 20px; }
+    footer.site { padding: 24px; }
+    footer.site .copyright { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- DELETE THIS TAG when publishing -->
+<div class="mockup-tag">Template · Talmud Daily</div>
+
+<!-- ============================================================
+     NAV — copy verbatim across all pages
+     ============================================================ -->
+<nav class="top" id="siteNav">
+  <div class="inner">
+    <a class="wordmark" href="index.html" aria-label="Talmud Daily home">
+      <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
+    </a>
+    <div class="links">
+      <a href="index.html#talmud">The Talmud</a>
+      <a href="index.html#arc">The Journey</a>
+      <a href="resources.html">Resources</a>
+      <a href="index.html#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
+      <a class="cta-btn" href="index.html#signup">Sign up</a>
+      <button class="hamburger" aria-label="Open menu" aria-expanded="false" onclick="toggleNav(this)"><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ==========================================================
+       HERO — swap kicker/h1/lede per page. Keep or delete the block.
+       ========================================================== -->
+  <section class="hero">
+    <div class="kicker">Section label</div>
+    <h1>Page title <em>goes here</em>.</h1>
+    <p class="lede">One sentence that sets up what this page is for. Written in the same voice as the rest of the site — plain, unhurried, honest.</p>
+  </section>
+
+  <!-- ==========================================================
+       CONTENT — everything else goes here. Example: a contact form.
+       Replace with real content when building the actual page.
+       ========================================================== -->
+  <section class="content">
+
+    <h2>Send us a note.</h2>
+    <p>This is an example form. It doesn't submit anywhere yet — update the <code>action</code> attribute below to point at your form endpoint (Mailchimp, Formspree, your own backend, etc.), or wire it up with JavaScript.</p>
+
+    <form class="td-form" action="#" method="POST" onsubmit="return handleSubmit(event)">
+
+      <div class="field">
+        <label for="f-name">Your name<span class="req">*</span></label>
+        <input type="text" id="f-name" name="name" required autocomplete="name">
+      </div>
+
+      <div class="field">
+        <label for="f-email">Email<span class="req">*</span></label>
+        <input type="email" id="f-email" name="email" required autocomplete="email">
+        <div class="field-hint">We'll only use this to reply. No list, no forwarding.</div>
+      </div>
+
+      <div class="field">
+        <label for="f-topic">What is this about?</label>
+        <select id="f-topic" name="topic">
+          <option value="">Choose one…</option>
+          <option value="feedback">Feedback on the program</option>
+          <option value="sponsor">Sponsor an episode or week</option>
+          <option value="tech">Something's broken</option>
+          <option value="other">Something else</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-message">Your message<span class="req">*</span></label>
+        <textarea id="f-message" name="message" required></textarea>
+      </div>
+
+      <div class="field">
+        <label class="checkbox">
+          <input type="checkbox" name="updates">
+          <span>Send me occasional Talmud Daily updates. (Optional.)</span>
+        </label>
+      </div>
+
+      <button type="submit" class="submit">
+        Send message
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+
+    </form>
+
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER — copy verbatim across all pages
+     ============================================================ -->
+<footer class="site">
+  <div class="inner">
+    <a class="wordmark" href="index.html">
+      <img src="tdbrand/wordmark-cream.svg" alt="Talmud Daily">
+    </a>
+    <span>A project of 18Forty</span>
+    <span class="copyright">© 2026 18Forty</span>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav hamburger — same across all Talmud Daily pages
+  function toggleNav(btn) {
+    const nav = document.getElementById('siteNav');
+    const open = nav.classList.toggle('mobile-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  document.addEventListener('click', (e) => {
+    const nav = document.getElementById('siteNav');
+    if (!nav || !nav.classList.contains('mobile-open')) return;
+    if (e.target.closest('nav.top .links a')) {
+      nav.classList.remove('mobile-open');
+      const h = nav.querySelector('.hamburger');
+      if (h) { h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-label', 'Open menu'); }
+    }
+  });
+
+  // ==========================================================
+  // FORM SUBMIT — example handler. Replace with your real one.
+  // ==========================================================
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.submit');
+    btn.innerHTML = 'Sent ✓';
+    btn.disabled = true;
+    // TODO: replace with a real fetch() to your endpoint.
+    return false;
+  }
+</script>
+
+</body>
+</html>
