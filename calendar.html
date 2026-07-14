@@ -631,7 +631,14 @@
   function tractateFor(date) {
     const dayIdx = Math.floor((date - START) / (1000 * 60 * 60 * 24));
     if (dayIdx < 0) return null;
-    const weekIdx = Math.floor(dayIdx / 7);
+    let weekIdx = Math.floor(dayIdx / 7);
+    // Sunday-borrowed cells belong to the following week's tractate, not the
+    // calendar week the Sunday sits inside. (SHIFTS is defined lower in the file
+    // but this function is only called after that block has been parsed.)
+    const key = ymd(date);
+    if (typeof SHIFTS !== 'undefined' && SHIFTS[key] && date.getDay() === 0) {
+      weekIdx += 1;
+    }
     return TRACTATES[weekIdx] || null;
   }
 
