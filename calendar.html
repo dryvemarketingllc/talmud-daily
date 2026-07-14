@@ -200,6 +200,10 @@
     background: var(--burgundy);
     opacity: 0.7;
   }
+  .swatch.shifted {
+    background: var(--paper-pure);
+    border-left: 3px solid var(--burgundy);
+  }
 
   /* CALENDAR CONTAINER */
   .calendar {
@@ -315,6 +319,23 @@
     opacity: 0.85;
     line-height: 1.2;
     margin-top: 3px;
+  }
+  /* Shifted cells (borrowed Sun/Sat for Yom Tov weeks, or Voices moved to Thursday) */
+  .day-cell.shifted {
+    border-left: 3px solid var(--burgundy);
+    padding-left: 9px;
+  }
+  .day-cell.shifted .date { color: var(--burgundy); }
+  .day-cell .shift-note {
+    font-family: var(--sans);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 4px;
+    opacity: 0.85;
   }
 
   .day-cell .date {
@@ -471,7 +492,7 @@
 <!-- NAV -->
 <nav class="top">
   <div class="inner">
-    <a class="wordmark" href="/" aria-label="Talmud Daily home">
+    <a class="wordmark" href="index.html" aria-label="Talmud Daily home">
       <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
     </a>
     <div class="role">For planning · Not public</div>
@@ -522,6 +543,7 @@
   <span class="lg-item"><span class="swatch weekend"></span>Off (Sat/Sun)</span>
   <span class="lg-item"><span class="swatch paused"></span>Paused (Jewish holiday, no email)</span>
   <span class="lg-item"><span class="swatch observed"></span>Holiday observed (Chol Hamoed, Chanukah — no pause)</span>
+  <span class="lg-item"><span class="swatch shifted"></span>Shifted day (borrowed from weekend for Yom Tov weeks)</span>
 </div>
 
 <!-- MONTH NAV -->
@@ -535,7 +557,8 @@
   <strong>Assumptions in this draft:</strong>
   <ul>
     <li>Program pauses on: Rosh Hashanah, Yom Kippur, Sukkot (1st &amp; 2nd days + Shemini Atzeret &amp; Simchat Torah), Passover (1st &amp; 2nd days + 7th &amp; 8th days), Shavuot (1st &amp; 2nd days).</li>
-    <li>Chol Hamoed (intermediate days of Sukkot &amp; Passover) is <em>observed but not paused</em> — daily emails still go out. If you want to pause the program during Chol Hamoed too, say the word and I'll update.</li>
+    <li>Chol Hamoed (intermediate days of Sukkot &amp; Passover) is <em>observed but not paused</em> — daily emails still go out.</li>
+    <li><strong>Holiday-week shift.</strong> When Yom Tov lands on a program weekday, we borrow adjacent weekend slots so the week still delivers 5 episodes. <em>One Yom Tov weekday</em> → borrow the preceding Sunday. <em>Two Yom Tov weekdays</em> → borrow Sunday and Motzei Shabbos. Shifted cells are marked with a burgundy left border. Applies in 5787 to: Yom Kippur week (Sun Sept 20 borrowed), Passover weeks 1 &amp; 2 (Sun + Motzei Shabbos borrowed), and Shavuot week (Voices moves from Fri May 21 to Thu May 20).</li>
     <li>Chanukah, Purim, Tu B'Shevat, Yom HaAtzmaut, Yom Yerushalayim, and Lag B'Omer are noted for context but <em>do not pause</em> the schedule.</li>
     <li>Jewish holiday dates verify against <a href="https://www.hebcal.com" target="_blank" rel="noopener" style="color:var(--burgundy);">Hebcal</a> before locking the calendar.</li>
     <li>Daily episode numbering restarts when a paused holiday interrupts — total daily count reflects only actual episodes released.</li>
@@ -545,7 +568,7 @@
 <!-- FOOTER -->
 <footer class="site">
   <div class="inner">
-    <a class="wordmark" href="/">
+    <a class="wordmark" href="index.html">
       <img src="tdbrand/wordmark-cream.svg" alt="Talmud Daily">
     </a>
     <span>Internal planning · Not for distribution</span>
@@ -657,9 +680,26 @@
     '2027-04-21': { name: "Yom HaAtzmaut", pause: false },
     '2027-05-09': { name: "Lag B'Omer", pause: false },
     '2027-05-16': { name: 'Yom Yerushalayim', pause: false },
-    // Shavuot (6-7 Sivan)
-    '2027-05-26': { name: 'Shavuot I', pause: true },
-    '2027-05-27': { name: 'Shavuot II', pause: true }
+    // Shavuot (6-7 Sivan) — Fri-Sat in 5787
+    '2027-05-21': { name: 'Shavuot I', pause: true },
+    '2027-05-22': { name: 'Shavuot II', pause: true }
+  };
+
+  // Holiday shifts. When a Yom Tov lands on a program weekday, we borrow
+  // adjacent Sunday/Motzei-Shabbos slots so the week still has 5 episodes.
+  //   programType: 'program' = weekday learning; 'voices' = the moved Voices slot.
+  //   note: appears as a small badge on the calendar cell.
+  const SHIFTS = {
+    // Yom Kippur week (Mon Sep 21 blocked) → borrow preceding Sunday
+    '2026-09-20': { programType: 'program', note: 'For Yom Kippur week' },
+    // Passover Week 1 (Thu Apr 1 + Fri Apr 2 blocked) → borrow Sun + Motzei Shabbos
+    '2027-03-28': { programType: 'program', note: 'For Passover I–II week' },
+    '2027-04-03': { programType: 'voices',  note: 'Motzei Shabbos · Voices moved from Fri' },
+    // Passover Week 2 (Wed Apr 7 + Thu Apr 8 blocked) → borrow Sun + Motzei Shabbos
+    '2027-04-04': { programType: 'program', note: 'For Passover VII–VIII week' },
+    '2027-04-10': { programType: 'program', note: 'Motzei Shabbos · Passover VII–VIII week' },
+    // Shavuot week (Fri May 21 blocked) → Voices moves to Thursday
+    '2027-05-20': { programType: 'voices',  note: 'Voices moved from Fri (Shavuot I)' }
   };
 
   function ymd(d) {
@@ -672,7 +712,10 @@
   function classifyDay(d) {
     const key = ymd(d);
     const holiday = HOLIDAYS[key];
+    const shift = SHIFTS[key];
     const wd = d.getDay(); // 0=Sun, 6=Sat
+    // Shift overrides everything — turns a Sun/Sat into a program day, or a Thu into Voices.
+    if (shift) return { type: shift.programType, shift };
     if (wd === 0 || wd === 6) return { type: 'weekend', holiday: holiday || null };
     if (holiday && holiday.pause) return { type: 'paused', holiday };
     if (holiday && !holiday.pause) return { type: (wd === 5 ? 'voices' : 'program'), holiday, observed: true };
@@ -732,6 +775,7 @@
     const cell = document.createElement('div');
     let classes = ['day-cell', info.type];
     if (info.observed) classes.push('observed');
+    if (info.shift) classes.push('shifted');
     cell.className = classes.join(' ');
     const tract = (info.type === 'program' || info.type === 'voices' || info.type === 'paused') ? tractateFor(date) : null;
     let content = `<div class="date">${date.getDate()}</div>`;
@@ -769,6 +813,10 @@
     // For observed (chol hamoed / chanukah / etc.) days, show the holiday name as an italic tag
     if (info.observed && info.holiday) {
       content += `<div class="holiday-observed">${info.holiday.name}</div>`;
+    }
+    // For shifted days (borrowed Sun/Sat, or Voices moved to Thu), show a small badge
+    if (info.shift) {
+      content += `<div class="shift-note">${info.shift.note}</div>`;
     }
     cell.innerHTML = content;
     return cell;
