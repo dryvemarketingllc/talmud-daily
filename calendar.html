@@ -558,7 +558,7 @@
   <ul>
     <li>Program pauses on: Rosh Hashanah, Yom Kippur, Sukkot (1st &amp; 2nd days + Shemini Atzeret &amp; Simchat Torah), Passover (1st &amp; 2nd days + 7th &amp; 8th days), Shavuot (1st &amp; 2nd days).</li>
     <li>Chol Hamoed (intermediate days of Sukkot &amp; Passover) is <em>observed but not paused</em> — daily emails still go out.</li>
-    <li><strong>Holiday-week shift.</strong> When Yom Tov lands on a program weekday, we borrow adjacent weekend slots so the week still delivers 5 episodes. <em>One Yom Tov weekday</em> → borrow the preceding Sunday. <em>Two Yom Tov weekdays</em> → borrow Sunday and Motzei Shabbos. Shifted cells are marked with a burgundy left border. Applies in 5787 to: Yom Kippur week (Sun Sept 20 borrowed), Passover weeks 1 &amp; 2 (Sun + Motzei Shabbos borrowed), and Shavuot week (Voices moves from Fri May 21 to Thu May 20).</li>
+    <li><strong>Holiday-week shift.</strong> When Yom Tov lands on a program weekday, we borrow adjacent weekend slots so each week still delivers 4 learning episodes + 1 Voices, in that order. <em>One Yom Tov weekday</em> → borrow the preceding Sunday. <em>Two Yom Tov weekdays</em> → borrow Sunday and Motzei Shabbos. <em>Fri + Sat both blocked (Shavuot)</em> → borrow the following Sunday for Voices. Shifted cells are marked with a burgundy left border. Applies in 5787 to: Yom Kippur week (Sun Sept 20 borrowed), Passover weeks 1 &amp; 2 (Sun + Motzei Shabbos), and Shavuot week (Sun May 23 = Voices).</li>
     <li>Chanukah, Purim, Tu B'Shevat, Yom HaAtzmaut, Yom Yerushalayim, and Lag B'Omer are noted for context but <em>do not pause</em> the schedule.</li>
     <li>Jewish holiday dates verify against <a href="https://www.hebcal.com" target="_blank" rel="noopener" style="color:var(--burgundy);">Hebcal</a> before locking the calendar.</li>
     <li>Daily episode numbering restarts when a paused holiday interrupts — total daily count reflects only actual episodes released.</li>
@@ -632,13 +632,11 @@
     const dayIdx = Math.floor((date - START) / (1000 * 60 * 60 * 24));
     if (dayIdx < 0) return null;
     let weekIdx = Math.floor(dayIdx / 7);
-    // Sunday-borrowed cells belong to the following week's tractate, not the
-    // calendar week the Sunday sits inside. (SHIFTS is defined lower in the file
-    // but this function is only called after that block has been parsed.)
+    // Shifted cells may inherit a different tractate-week (e.g. a Sunday
+    // borrowed for the FOLLOWING week's Yom Tov takes weekOffset: +1).
     const key = ymd(date);
-    if (typeof SHIFTS !== 'undefined' && SHIFTS[key] && date.getDay() === 0) {
-      weekIdx += 1;
-    }
+    const s = (typeof SHIFTS !== 'undefined') ? SHIFTS[key] : null;
+    if (s && s.weekOffset) weekIdx += s.weekOffset;
     return TRACTATES[weekIdx] || null;
   }
 
@@ -692,21 +690,32 @@
     '2027-05-22': { name: 'Shavuot II', pause: true }
   };
 
-  // Holiday shifts. When a Yom Tov lands on a program weekday, we borrow
-  // adjacent Sunday/Motzei-Shabbos slots so the week still has 5 episodes.
-  //   programType: 'program' = weekday learning; 'voices' = the moved Voices slot.
+  // Holiday shifts. When Yom Tov lands on a program weekday, we borrow
+  // adjacent slots so each week still delivers 4 learning + 1 Voices, in that order.
+  //   programType: 'program' = weekday learning; 'voices' = the Voices slot.
+  //   weekOffset: shifts which tractate-week this cell inherits (Sun-before-YT
+  //     borrows +1; end-of-week borrows 0).
   //   note: appears as a small badge on the calendar cell.
   const SHIFTS = {
-    // Yom Kippur week (Mon Sep 21 blocked) → borrow preceding Sunday
-    '2026-09-20': { programType: 'program', note: 'For Yom Kippur week' },
-    // Passover Week 1 (Thu Apr 1 + Fri Apr 2 blocked) → borrow Sun + Motzei Shabbos
-    '2027-03-28': { programType: 'program', note: 'For Passover I–II week' },
-    '2027-04-03': { programType: 'voices',  note: 'Motzei Shabbos · Voices moved from Fri' },
-    // Passover Week 2 (Wed Apr 7 + Thu Apr 8 blocked) → borrow Sun + Motzei Shabbos
-    '2027-04-04': { programType: 'program', note: 'For Passover VII–VIII week' },
-    '2027-04-10': { programType: 'program', note: 'Motzei Shabbos · Passover VII–VIII week' },
-    // Shavuot week (Fri May 21 blocked) → Voices moves to Thursday
-    '2027-05-20': { programType: 'voices',  note: 'Voices moved from Fri (Shavuot I)' }
+    // Yom Kippur week (Mon Sep 21 blocked) → borrow preceding Sunday.
+    // Pattern: Sun learning → Tue/Wed/Thu learning → Fri Voices.
+    '2026-09-20': { programType: 'program', weekOffset: +1, note: 'For Yom Kippur week' },
+
+    // Passover Week 1 (Thu Apr 1 + Fri Apr 2 blocked) → borrow Sun + Motzei Shabbos.
+    // Pattern: Sun/Mon/Tue/Wed learning → Sat Motzei Voices.
+    '2027-03-28': { programType: 'program', weekOffset: +1, note: 'For Passover I–II week' },
+    '2027-04-03': { programType: 'voices',  weekOffset:  0, note: 'Motzei Shabbos · Voices' },
+
+    // Passover Week 2 (Wed Apr 7 + Thu Apr 8 blocked) → borrow Sun + Motzei Shabbos.
+    // Pattern: Sun/Mon/Tue learning → Fri learning → Sat Motzei Voices.
+    // (Fri stays a normal weekday here, but we override it to LEARNING so Voices lands last.)
+    '2027-04-04': { programType: 'program', weekOffset: +1, note: 'For Passover VII–VIII week' },
+    '2027-04-09': { programType: 'program', weekOffset:  0, note: 'Learning (Voices moved to Sat)' },
+    '2027-04-10': { programType: 'voices',  weekOffset:  0, note: 'Motzei Shabbos · Voices' },
+
+    // Shavuot week (Fri May 21 + Sat May 22 blocked) → borrow following Sunday for Voices.
+    // Pattern: Mon/Tue/Wed/Thu learning → Sun Voices (last episode of the week).
+    '2027-05-23': { programType: 'voices',  weekOffset:  0, note: 'Voices · Shavuot week' }
   };
 
   function ymd(d) {
