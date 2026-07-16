@@ -660,6 +660,64 @@
   }
   .tractates li:last-child { border-bottom: none; }
 
+  /* SEDER SPONSORS */
+  .sponsor-note {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    font-style: italic;
+    margin: 8px 0 4px;
+  }
+  .sponsor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 32px 0;
+  }
+  .sponsor-seder {
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 24px 22px;
+    border-radius: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .sponsor-seder .seder-h {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+    margin: 0;
+  }
+  .sponsor-by-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 700;
+  }
+  .sponsor-name {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-top: 6px;
+  }
+  .sponsor-name.available {
+    font-style: normal;
+    color: var(--muted);
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 900px) {
+    .sponsor-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .sponsor-grid { grid-template-columns: 1fr; }
+  }
+
   /* THE RHYTHM */
   .rhythm-week {
     display: grid;
@@ -1367,6 +1425,41 @@
   <div class="arc-row finale">
     <div class="arc-label">June 6, 2027</div>
     <div class="arc-body">Siyum HaShas. The end of the journey, alongside Jews around the world.</div>
+  </div>
+</section>
+
+<!-- THE DEDICATIONS -->
+<section class="s wide" id="dedications">
+  <div class="section-eyebrow">Dedications</div>
+  <h2 class="section-h">Each seder, <em>carried by someone.</em></h2>
+  <p class="section-lede">The whole Shas is learned together — and each of the six Sedarim can be dedicated in honor or memory of someone who matters to you.</p>
+  <p class="sponsor-note">Placeholder names shown below — real dedications to be confirmed.</p>
+
+  <div class="sponsor-grid">
+    <div class="sponsor-seder">
+      <div class="seder-h"><div class="seder-name">Zeraim</div><div class="seder-translation">Agriculture</div></div>
+      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name">The Rosenberg Family</div></div>
+    </div>
+    <div class="sponsor-seder">
+      <div class="seder-h"><div class="seder-name">Moed</div><div class="seder-translation">Holidays</div></div>
+      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name">In memory of Shmuel ben Yaakov <span style="font-style:normal;">z"l</span></div></div>
+    </div>
+    <div class="sponsor-seder">
+      <div class="seder-h"><div class="seder-name">Nashim</div><div class="seder-translation">Family Law</div></div>
+      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name">The Adler Family</div></div>
+    </div>
+    <div class="sponsor-seder">
+      <div class="seder-h"><div class="seder-name">Nezikin</div><div class="seder-translation">Damages</div></div>
+      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name">In honor of the Weiss Family</div></div>
+    </div>
+    <div class="sponsor-seder">
+      <div class="seder-h"><div class="seder-name">Kodashim</div><div class="seder-translation">Sacrifices</div></div>
+      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name available">Available — become a dedicant</div></div>
+    </div>
+    <div class="sponsor-seder">
+      <div class="seder-h"><div class="seder-name">Tahoros</div><div class="seder-translation">Purity</div></div>
+      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name available">Available — become a dedicant</div></div>
+    </div>
   </div>
 </section>
 
