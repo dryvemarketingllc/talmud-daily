@@ -558,9 +558,9 @@
   <ul>
     <li>Program pauses on: Rosh Hashanah, Yom Kippur, Sukkot (1st &amp; 2nd days + Shemini Atzeret &amp; Simchat Torah), Passover (1st &amp; 2nd days + 7th &amp; 8th days), Shavuot (1st &amp; 2nd days).</li>
     <li>Chol Hamoed (intermediate days of Sukkot &amp; Passover) is <em>observed but not paused</em> — daily emails still go out.</li>
-    <li><strong>Holiday-week shift.</strong> When Yom Tov lands on a program weekday, we borrow adjacent weekend slots so each week still delivers 4 learning episodes + 1 Voices, in that order. <em>One Yom Tov weekday</em> → borrow the preceding Sunday. <em>Two Yom Tov weekdays</em> → borrow Sunday and Motzei Shabbos. <em>Fri + Sat both blocked (Shavuot)</em> → borrow the following Sunday for Voices. Shifted cells are marked with a burgundy left border. Applies in 5787 to: Yom Kippur week (Sun Sept 20 borrowed), Passover weeks 1 &amp; 2 (Sun + Motzei Shabbos), and Shavuot week (Sun May 23 = Voices).</li>
+    <li><strong>Holiday-week shift.</strong> When Yom Tov lands on a program weekday, we borrow adjacent weekend slots so each week still delivers 4 learning episodes + 1 Voices, in that order. <em>One Yom Tov weekday</em> → borrow the preceding Sunday. <em>Two Yom Tov weekdays</em> → borrow Sunday and Motzei Shabbos. <em>Fri + Sat both blocked (Shavuot)</em> → borrow the following Sunday for Voices. Shifted cells are marked with a burgundy left border. Applies in 5787 to: Yom Kippur week (Sun Sep 20 borrowed) and Passover weeks 1 &amp; 2 (borrowed Sun Apr 18 + Motzei Sat Apr 24; then Sun Apr 25 + Fri Apr 30 learning + Motzei Sat May 1). Shavuot (Jun 11–12) falls after the Jun 6 Siyum, so it no longer affects the schedule.</li>
     <li>Chanukah, Purim, Tu B'Shevat, Yom HaAtzmaut, Yom Yerushalayim, and Lag B'Omer are noted for context but <em>do not pause</em> the schedule.</li>
-    <li>Jewish holiday dates verify against <a href="https://www.hebcal.com" target="_blank" rel="noopener" style="color:var(--burgundy);">Hebcal</a> before locking the calendar.</li>
+    <li>Jewish holiday dates verified against <a href="https://www.hebcal.com" target="_blank" rel="noopener" style="color:var(--burgundy);">Hebcal</a> for 5787 (diaspora / 2-day yom tov). Note: 5787 is a Jewish leap year, so spring holidays fall ~3 weeks later than a common year.</li>
     <li>Daily episode numbering restarts when a paused holiday interrupts — total daily count reflects only actual episodes released.</li>
   </ul>
 </div>
@@ -665,29 +665,29 @@
     '2026-12-10': { name: 'Chanukah VI', pause: false },
     '2026-12-11': { name: 'Chanukah VII', pause: false },
     '2026-12-12': { name: 'Chanukah VIII', pause: false },
-    // Tu B'Shevat
-    '2027-02-03': { name: "Tu B'Shevat", pause: false },
-    // Purim (14 Adar)
-    '2027-03-13': { name: "Erev Purim", pause: false },
-    '2027-03-14': { name: 'Purim', pause: false },
-    '2027-03-15': { name: 'Shushan Purim', pause: false },
-    // Passover (15-22 Nisan) — dates approximate; verify
-    '2027-04-01': { name: 'Passover I', pause: true },
-    '2027-04-02': { name: 'Passover II', pause: true },
-    '2027-04-03': { name: 'Passover III', pause: false },
-    '2027-04-04': { name: 'Passover IV', pause: false },
-    '2027-04-05': { name: 'Passover V', pause: false },
-    '2027-04-06': { name: 'Passover VI', pause: false },
-    '2027-04-07': { name: 'Passover VII', pause: true },
-    '2027-04-08': { name: 'Passover VIII', pause: true },
-    // Post-Passover
-    '2027-04-14': { name: 'Yom HaShoah', pause: false },
-    '2027-04-21': { name: "Yom HaAtzmaut", pause: false },
-    '2027-05-09': { name: "Lag B'Omer", pause: false },
-    '2027-05-16': { name: 'Yom Yerushalayim', pause: false },
-    // Shavuot (6-7 Sivan) — Fri-Sat in 5787
-    '2027-05-21': { name: 'Shavuot I', pause: true },
-    '2027-05-22': { name: 'Shavuot II', pause: true }
+    // Tu B'Shevat (15 Shevat) — verified Hebcal 5787
+    '2027-01-23': { name: "Tu B'Shevat", pause: false },
+    // Purim (14 Adar II — 5787 is a leap year) — verified Hebcal 5787
+    '2027-03-22': { name: "Erev Purim", pause: false },
+    '2027-03-23': { name: 'Purim', pause: false },
+    '2027-03-24': { name: 'Shushan Purim', pause: false },
+    // Passover (15-22 Nisan 5787) — verified Hebcal (diaspora)
+    '2027-04-22': { name: 'Passover I', pause: true },
+    '2027-04-23': { name: 'Passover II', pause: true },
+    '2027-04-24': { name: 'Passover III', pause: false },
+    '2027-04-25': { name: 'Passover IV', pause: false },
+    '2027-04-26': { name: 'Passover V', pause: false },
+    '2027-04-27': { name: 'Passover VI', pause: false },
+    '2027-04-28': { name: 'Passover VII', pause: true },
+    '2027-04-29': { name: 'Passover VIII', pause: true },
+    // Post-Passover — verified Hebcal 5787
+    '2027-05-04': { name: 'Yom HaShoah', pause: false },
+    '2027-05-12': { name: "Yom HaAtzmaut", pause: false },
+    '2027-05-25': { name: "Lag B'Omer", pause: false },
+    '2027-06-04': { name: 'Yom Yerushalayim', pause: false },
+    // Shavuot (6-7 Sivan) — Jun 11-12 in 5787, AFTER the Jun 6 Siyum (out of program range)
+    '2027-06-11': { name: 'Shavuot I', pause: true },
+    '2027-06-12': { name: 'Shavuot II', pause: true }
   };
 
   // Holiday shifts. When Yom Tov lands on a program weekday, we borrow
@@ -701,21 +701,19 @@
     // Pattern: Sun learning → Tue/Wed/Thu learning → Fri Voices.
     '2026-09-20': { programType: 'program', weekOffset: +1, note: 'For Yom Kippur week' },
 
-    // Passover Week 1 (Thu Apr 1 + Fri Apr 2 blocked) → borrow Sun + Motzei Shabbos.
+    // Passover Week 1 (Thu Apr 22 + Fri Apr 23 blocked) → borrow Sun + Motzei Shabbos.
     // Pattern: Sun/Mon/Tue/Wed learning → Sat Motzei Voices.
-    '2027-03-28': { programType: 'program', weekOffset: +1, note: 'For Passover I–II week' },
-    '2027-04-03': { programType: 'voices',  weekOffset:  0, note: 'Motzei Shabbos · Voices' },
+    '2027-04-18': { programType: 'program', weekOffset: +1, note: 'For Passover I–II week' },
+    '2027-04-24': { programType: 'voices',  weekOffset:  0, note: 'Motzei Shabbos · Voices' },
 
-    // Passover Week 2 (Wed Apr 7 + Thu Apr 8 blocked) → borrow Sun + Motzei Shabbos.
+    // Passover Week 2 (Wed Apr 28 + Thu Apr 29 blocked) → borrow Sun + Motzei Shabbos.
     // Pattern: Sun/Mon/Tue learning → Fri learning → Sat Motzei Voices.
     // (Fri stays a normal weekday here, but we override it to LEARNING so Voices lands last.)
-    '2027-04-04': { programType: 'program', weekOffset: +1, note: 'For Passover VII–VIII week' },
-    '2027-04-09': { programType: 'program', weekOffset:  0, note: 'Learning (Voices moved to Sat)' },
-    '2027-04-10': { programType: 'voices',  weekOffset:  0, note: 'Motzei Shabbos · Voices' },
+    '2027-04-25': { programType: 'program', weekOffset: +1, note: 'For Passover VII–VIII week' },
+    '2027-04-30': { programType: 'program', weekOffset:  0, note: 'Learning (Voices moved to Sat)' },
+    '2027-05-01': { programType: 'voices',  weekOffset:  0, note: 'Motzei Shabbos · Voices' }
 
-    // Shavuot week (Fri May 21 + Sat May 22 blocked) → borrow following Sunday for Voices.
-    // Pattern: Mon/Tue/Wed/Thu learning → Sun Voices (last episode of the week).
-    '2027-05-23': { programType: 'voices',  weekOffset:  0, note: 'Voices · Shavuot week' }
+    // Shavuot (Jun 11–12) now falls AFTER the Jun 6 Siyum — no shift needed (removed).
   };
 
   function ymd(d) {
