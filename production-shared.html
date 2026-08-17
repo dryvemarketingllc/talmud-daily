@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Production Tracker (Shared) — Talmud Daily</title>
+<meta name="robots" content="noindex, nofollow">
+
+<!-- ================================================================
+     FIREBASE SETUP — read this once, then follow the steps
+     ================================================================
+     This tracker uses Firebase Realtime Database to sync check-marks
+     across everyone who opens the URL. Setup takes about 5 minutes.
+
+     STEP-BY-STEP:
+     1. Go to https://console.firebase.google.com and sign in with a
+        Google account (talmud daily's Gmail is ideal).
+     2. Click "Add project". Name it "talmud-daily-tracker". Skip
+        Google Analytics.
+     3. Once the project is created, open it. In the left sidebar,
+        click "Build" → "Realtime Database".
+     4. Click "Create Database". Choose a location (us-central1 is fine).
+     5. Choose "Start in test mode" for now. Click "Enable".
+     6. Back on the Project Overview page, click the gear icon (top left)
+        → "Project settings" → "General" tab.
+     7. Scroll down to "Your apps". Click the </> web icon.
+     8. Register the app with any nickname (e.g. "tracker"). Click
+        "Register app". Do NOT set up Firebase Hosting.
+     9. Firebase will show you a config object with apiKey, authDomain,
+        databaseURL, projectId, storageBucket, messagingSenderId, appId.
+    10. Copy those five values into the FIREBASE_CONFIG object below.
+    11. Save and reload the page. Sync should turn green.
+
+     UNTIL YOU DO THIS: the tracker falls back to localStorage (personal,
+     private, this-browser-only). Same behavior as production.html.
+     ================================================================ -->
+
+<!-- Firebase SDK (compat build — works with plain script tags) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script>
+  // ============================================================
+  // ↓ PASTE YOUR FIREBASE CONFIG VALUES BELOW ↓
+  // ============================================================
+  const FIREBASE_CONFIG = {
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
+  };
+  // ============================================================
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #172020;
+    --ink-soft: #2A2A2A;
+    --paper: #EAE2D0;
+    --paper-pure: #F2EDDF;
+    --burgundy: #500E0F;
+    --burgundy-tint: rgba(80,14,15,0.08);
+    --sage: #A7A885;
+    --sage-tint: rgba(167,168,133,0.16);
+    --muted: #5E5C50;
+    --rule: #C9BFA6;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+    --sans: "Hind", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.5;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .internal-tag {
+    position: fixed;
+    bottom: 12px; left: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6px 10px;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 100;
+    border-radius: 1px;
+    opacity: 0.9;
+  }
+
+  .wordmark { display: inline-flex; align-items: center; text-decoration: none; line-height: 1; }
+  .wordmark img { display: block; height: 26px; width: auto; }
+
+  /* NAV */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(234,226,208,0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.top .inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav.top .role {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 700;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 40px 40px 24px;
+  }
+  .page-header .kicker {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .page-header h1 {
+    font-family: var(--serif);
+    font-size: 44px;
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.012em;
+    margin-bottom: 12px;
+  }
+  .page-header h1 em { font-style: italic; }
+  .page-header .lede {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--muted);
+    max-width: 68ch;
+  }
+
+  /* STATS ROW */
+  .stats {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px 40px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 32px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .stat .k {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .stat .v {
+    font-family: var(--serif);
+    font-size: 30px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat .v em {
+    font-style: italic;
+    color: var(--burgundy);
+  }
+  .stat .sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .stat.highlighted { background: var(--paper-pure); padding: 16px 20px; border-radius: 2px; }
+  .stat.highlighted .v { font-size: 42px; }
+  .stat.highlighted .v em { color: var(--burgundy); }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 16px 40px 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .progress-bar {
+    height: 8px;
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--burgundy);
+    width: 0%;
+    transition: width 0.25s ease-out;
+  }
+  .progress-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .filter-toggle input {
+    margin: 0;
+    accent-color: var(--burgundy);
+  }
+  .reset-btn {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover { border-color: var(--burgundy); color: var(--burgundy); }
+
+  /* Sync status indicator */
+  .sync-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    padding: 6px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    background: var(--paper-pure);
+    margin-left: 12px;
+  }
+  .sync-status::before {
+    content: "";
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #999;
+  }
+  .sync-status.synced { color: #2E4A18; border-color: #6B9A3E; background: #EDF5E0; }
+  .sync-status.synced::before { background: #6B9A3E; box-shadow: 0 0 0 2px rgba(107,154,62,0.25); }
+  .sync-status.local { color: #7A5B00; border-color: #C9A94A; background: #FDF6E0; }
+  .sync-status.local::before { background: #C9A94A; }
+  .sync-status.offline { color: #7A2020; border-color: var(--burgundy); background: #F5E5E5; }
+  .sync-status.offline::before { background: var(--burgundy); }
+
+  /* LEGEND */
+  .legend {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--rule);
+  }
+  .legend .lg-label {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .legend .lg-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .legend .swatch {
+    width: 20px; height: 20px;
+    border: 1px solid var(--rule);
+    display: inline-block;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+  .swatch.program { background: var(--paper-pure); }
+  .swatch.voices { background: rgba(0,0,0,0.04); border-color: rgba(94,92,80,0.20); }
+  .swatch.weekend { background: rgba(23,32,32,0.18); border-color: rgba(23,32,32,0.22); }
+  .swatch.paused {
+    background: var(--burgundy-tint);
+    border-color: var(--burgundy);
+  }
+  .swatch.observed {
+    background: var(--paper-pure);
+    border-color: var(--rule);
+    position: relative;
+  }
+  .swatch.observed::after {
+    content: "";
+    position: absolute;
+    left: 3px; right: 3px; bottom: 3px;
+    height: 4px;
+    background: var(--burgundy);
+    opacity: 0.7;
+  }
+  .swatch.shifted {
+    background: var(--paper-pure);
+    border-left: 3px solid var(--burgundy);
+  }
+
+  /* CALENDAR CONTAINER */
+  .calendar {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px 40px 96px;
+  }
+  .month-block {
+    margin-bottom: 48px;
+    scroll-margin-top: 100px;
+  }
+  .month-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .month-head .m-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .month-head .m-title .yr {
+    color: var(--muted);
+    font-style: italic;
+    margin-left: 12px;
+    font-size: 22px;
+  }
+  .month-head .m-stats {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .month-head .m-stats em {
+    color: var(--burgundy);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .weekday-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .weekday-row .wd {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    text-align: center;
+    padding: 6px 4px;
+  }
+
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .day-cell {
+    aspect-ratio: 1 / 0.95;
+    background: var(--paper-pure);
+    border: 1px solid var(--rule);
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 88px;
+  }
+  .day-cell.empty { background: transparent; border: none; }
+  .day-cell.pre, .day-cell.post {
+    background: transparent;
+    border: 1px dashed rgba(94,92,80,0.25);
+    opacity: 0.5;
+  }
+  .day-cell.pre .date, .day-cell.post .date { color: var(--muted); opacity: 0.6; }
+  .day-cell.pre .type, .day-cell.post .type {
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    opacity: 0.7;
+  }
+  /* Fri/Voices — subtle light-muted background (a step down from Mon-Thu cream) */
+  .day-cell.voices { background: rgba(0,0,0,0.04); border-color: rgba(94,92,80,0.20); }
+  /* Sat/Sun — dark muted grey, clearly de-emphasized since no program */
+  .day-cell.weekend { background: rgba(23,32,32,0.18); border-color: rgba(23,32,32,0.22); }
+  .day-cell.weekend .date { opacity: 0.55; }
+  .day-cell.weekend .type { opacity: 0.55; }
+  .day-cell.weekend .holiday {
+    color: var(--burgundy);
+    opacity: 0.85;
+  }
+  .day-cell.paused {
+    background: var(--burgundy-tint);
+    border-color: rgba(80,14,15,0.3);
+  }
+  /* Observed (chol hamoed, chanukah, etc.) — regular day background; the holiday label carries the info */
+  .day-cell.observed { /* no special background; behaves as its base type (program/voices) */ }
+  .day-cell .holiday-observed {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--burgundy);
+    opacity: 0.85;
+    line-height: 1.2;
+    margin-top: 3px;
+  }
+  /* Shifted cells (borrowed Sun/Sat for Yom Tov weeks, or Voices moved to Thursday) */
+  .day-cell.shifted {
+    border-left: 3px solid var(--burgundy);
+    padding-left: 9px;
+  }
+  .day-cell.shifted .date { color: var(--burgundy); }
+  .day-cell .shift-note {
+    font-family: var(--sans);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 4px;
+    opacity: 0.85;
+  }
+
+  /* Content type — the label showing what kind of episode this day is */
+  .day-cell .content-type {
+    font-family: var(--sans);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  /* Clickable + recorded state — for production tracking */
+  .day-cell.program,
+  .day-cell.voices {
+    cursor: pointer;
+    transition: background-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .day-cell.program:hover,
+  .day-cell.voices:hover {
+    box-shadow: inset 0 0 0 2px rgba(80,14,15,0.25);
+  }
+  .day-cell.recorded {
+    background: #B8D48C !important;
+    box-shadow: inset 0 0 0 2px #6B9A3E;
+  }
+  .day-cell.recorded .content-type,
+  .day-cell.recorded .tractate,
+  .day-cell.recorded .date,
+  .day-cell.recorded .prog-num {
+    color: #2E4A18;
+  }
+  .day-cell.recorded .content-type {
+    color: #4A6D24;
+  }
+  .day-cell.recorded::before {
+    content: "✓";
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+    background: #6B9A3E;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Hide-recorded filter */
+  body.hide-recorded .day-cell.recorded {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  body.hide-recorded .day-cell.recorded::before { opacity: 0.4; }
+
+  /* Recorded swatch in legend */
+  .swatch.recorded {
+    background: #B8D48C;
+    border-color: #6B9A3E;
+    position: relative;
+  }
+  .swatch.recorded::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2E4A18;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .day-cell .date {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .day-cell.weekend .date { color: var(--muted); opacity: 0.65; }
+  .day-cell.paused .date { color: var(--burgundy); }
+
+  .day-cell .type {
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-top: auto;
+  }
+  .day-cell .prog-num {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--sage);
+    font-size: 14px;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  /* voices prog-num inherits the same italic-serif treatment as program days */
+  .day-cell .tractate {
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+  .day-cell .tractate em {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 11px;
+    display: block;
+    margin-top: 1px;
+  }
+  .day-cell.voices .tractate { color: var(--ink); }
+  .day-cell.weekend .tractate { color: var(--muted); font-size: 12px; opacity: 0.7; }
+  .day-cell.paused .tractate {
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.75;
+  }
+  .day-cell.paused .tractate::before {
+    content: "would be: ";
+    font-style: italic;
+  }
+  .day-cell .holiday {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--burgundy);
+    line-height: 1.15;
+    margin-top: 4px;
+  }
+  .day-cell.observed .holiday { color: var(--ink); opacity: 0.75; }
+
+  .day-cell.today {
+    box-shadow: 0 0 0 2px var(--burgundy);
+    z-index: 1;
+  }
+
+  /* Month navigation */
+  .month-nav {
+    max-width: 1440px;
+    margin: 0 auto 8px;
+    padding: 12px 40px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule);
+  }
+  .month-nav a {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+  .month-nav a:hover { color: var(--burgundy); border-color: var(--burgundy); }
+
+  /* FOOTER NOTES */
+  .notes {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px 40px 40px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.5;
+    border-top: 1px solid var(--rule);
+  }
+  .notes strong { color: var(--ink); font-style: normal; font-weight: 500; }
+  .notes ul { margin-top: 8px; padding-left: 20px; }
+  .notes li { margin-bottom: 4px; }
+
+  /* FOOTER */
+  footer.site {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 28px 40px;
+  }
+  footer.site .inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: rgba(234,226,208,0.7);
+  }
+  footer.site .wordmark img { height: 22px; }
+
+  /* PRINT */
+  @media print {
+    .internal-tag, nav.top, .month-nav { display: none; }
+    body { background: white; }
+    .day-cell { min-height: 66px; }
+    .month-block { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 900px) {
+    .page-header, .stats, .legend, .month-nav, .calendar, .notes, footer.site { padding-left: 20px; padding-right: 20px; }
+    .stats { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .day-cell { padding: 6px; min-height: 70px; }
+    .day-cell .holiday { font-size: 10px; }
+    .day-cell .type { font-size: 8px; }
+    .month-head .m-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="internal-tag">Internal · Production Tracker (Shared)</div>
+
+<!-- NAV -->
+<nav class="top">
+  <div class="inner">
+    <a class="wordmark" href="index.html" aria-label="Talmud Daily home">
+      <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
+    </a>
+    <div class="role">Production tracking · Not public</div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="kicker">Production Tracker</div>
+  <h1>What's <em>recorded</em>. What's next.</h1>
+  <p class="lede">Every episode of the forty-week program with its content type. Click any cell to mark it recorded. Progress syncs in real-time across everyone who has this URL — Dovid, the producer, and anyone else on the team see the same state.</p>
+  <div id="sync-status" class="sync-status local">Connecting…</div>
+</div>
+
+<!-- STATS -->
+<div class="stats" id="stats">
+  <div class="stat highlighted">
+    <div class="k">Recorded</div>
+    <div class="v"><em id="stat-recorded">0</em></div>
+    <div class="sub"><span id="stat-pct">0%</span> of total</div>
+  </div>
+  <div class="stat">
+    <div class="k">Remaining</div>
+    <div class="v"><em id="stat-remaining">—</em></div>
+    <div class="sub">To record</div>
+  </div>
+  <div class="stat">
+    <div class="k">Total episodes</div>
+    <div class="v" id="stat-total">—</div>
+    <div class="sub" id="stat-total-sub">Daily + Voices</div>
+  </div>
+  <div class="stat">
+    <div class="k">Daily episodes</div>
+    <div class="v" id="stat-daily">—</div>
+    <div class="sub">Mon–Thu, non-holiday</div>
+  </div>
+  <div class="stat">
+    <div class="k">Voices interviews</div>
+    <div class="v" id="stat-voices">—</div>
+    <div class="sub">Friday long-form</div>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="progress-actions">
+    <label class="filter-toggle">
+      <input type="checkbox" id="filter-unrecorded"> Hide recorded episodes
+    </label>
+    <button type="button" class="reset-btn" onclick="resetRecorded()">Reset all</button>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <span class="lg-label">Legend</span>
+  <span class="lg-item"><span class="swatch program"></span>Daily episode (Mon–Thu)</span>
+  <span class="lg-item"><span class="swatch voices"></span>Voices interview (Fri)</span>
+  <span class="lg-item"><span class="swatch recorded"></span>Recorded (click any cell to toggle)</span>
+  <span class="lg-item"><span class="swatch paused"></span>Paused (Jewish holiday)</span>
+  <span class="lg-item"><span class="swatch shifted"></span>Shifted day (borrowed from weekend)</span>
+</div>
+
+<!-- MONTH NAV -->
+<div class="month-nav" id="month-nav"></div>
+
+<!-- CALENDAR -->
+<div class="calendar" id="calendar"></div>
+
+<!-- NOTES -->
+<div class="notes">
+  <strong>How to use this shared tracker:</strong>
+  <ul>
+    <li><strong>Click any episode cell</strong> to mark it recorded. Click again to unmark. When sync is on (green pill above), changes sync to Firebase in real time — everyone else with the URL sees the update within a second, on any device.</li>
+    <li><strong>Sync status</strong> appears next to the page title. Green = synced with Firebase. Yellow = local-only (Firebase not configured or offline — see setup notes in the file's HTML source). Red = sync failed.</li>
+    <li><strong>Content types cycle Mon–Fri:</strong> Monday = Key Concepts · Tuesday = Meaning · Wednesday = In Daily Life · Thursday = In History · Friday = Voices. On shifted weeks, the cycle continues in order.</li>
+    <li><strong>"Hide recorded episodes"</strong> dims completed cells so what's left to record shows clearly.</li>
+    <li><strong>Reset all</strong> clears every checkmark <em>for everyone using this URL</em>. Requires confirmation. Use with care.</li>
+    <li>Program pauses on Yom Tov; Chol Hamoed and minor holidays don't pause. Shifted cells (Sun Sept 20, Sun Mar 28, Sun Apr 4, Sat Apr 3, Sat Apr 10, Sun May 23) are borrowed from weekends so each week still delivers 4 learning + 1 Voices.</li>
+  </ul>
+</div>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="inner">
+    <a class="wordmark" href="index.html">
+      <img src="tdbrand/wordmark-cream.svg" alt="Talmud Daily">
+    </a>
+    <span>Internal planning · Not for distribution</span>
+    <span>© 2026 18Forty</span>
+  </div>
+</footer>
+
+<script>
+  // Program dates
+  const START = new Date(2026, 7, 24);   // Aug 24, 2026 (month is 0-indexed)
+  const END   = new Date(2027, 5, 6);    // Jun 6, 2027
+
+  // The 40-week tractate schedule (in program-week order starting Aug 24)
+  // Weeks 1-3 = Foundations, Week 4 = Zeraim/Brachos, Weeks 5-15 = Moed,
+  // Weeks 16-22 = Nashim, Weeks 23-30 = Nezikin, Weeks 31-39 = Kodashim, Week 40 = Tahoros
+  const TRACTATES = [
+    { name: 'Foundations',  seder: 'Weeks 1–3' },
+    { name: 'Foundations',  seder: 'Weeks 1–3' },
+    { name: 'Foundations',  seder: 'Weeks 1–3' },
+    { name: 'Brachos',      seder: 'Zeraim' },
+    { name: 'Shabbos',      seder: 'Moed' },
+    { name: 'Eruvin',       seder: 'Moed' },
+    { name: 'Pesachim',     seder: 'Moed' },
+    { name: 'Yoma',         seder: 'Moed' },
+    { name: 'Sukkah',       seder: 'Moed' },
+    { name: 'Beitzah',      seder: 'Moed' },
+    { name: 'Rosh Hashanah',seder: 'Moed' },
+    { name: 'Taanis',       seder: 'Moed' },
+    { name: 'Megillah',     seder: 'Moed' },
+    { name: 'Moed Katan',   seder: 'Moed' },
+    { name: 'Chagigah',     seder: 'Moed' },
+    { name: 'Yevamos',      seder: 'Nashim' },
+    { name: 'Kesubos',      seder: 'Nashim' },
+    { name: 'Nedarim',      seder: 'Nashim' },
+    { name: 'Nazir',        seder: 'Nashim' },
+    { name: 'Sotah',        seder: 'Nashim' },
+    { name: 'Gittin',       seder: 'Nashim' },
+    { name: 'Kiddushin',    seder: 'Nashim' },
+    { name: 'Bava Kamma',   seder: 'Nezikin' },
+    { name: 'Bava Metzia',  seder: 'Nezikin' },
+    { name: 'Bava Basra',   seder: 'Nezikin' },
+    { name: 'Sanhedrin',    seder: 'Nezikin' },
+    { name: 'Makkos',       seder: 'Nezikin' },
+    { name: 'Shevuos',      seder: 'Nezikin' },
+    { name: 'Avodah Zarah', seder: 'Nezikin' },
+    { name: 'Horayos',      seder: 'Nezikin' },
+    { name: 'Zevachim',     seder: 'Kodashim' },
+    { name: 'Menachos',     seder: 'Kodashim' },
+    { name: 'Chullin',      seder: 'Kodashim' },
+    { name: 'Bechoros',     seder: 'Kodashim' },
+    { name: 'Arachin',      seder: 'Kodashim' },
+    { name: 'Temurah',      seder: 'Kodashim' },
+    { name: 'Kerisos',      seder: 'Kodashim' },
+    { name: 'Meilah',       seder: 'Kodashim' },
+    { name: 'Tamid',        seder: 'Kodashim' },
+    { name: 'Niddah',       seder: 'Tahoros' },
+    { name: 'Toward Siyum', seder: 'Week 41 · Wrap-up', sub: 'Reflection and prep for June 6' }
+  ];
+
+  function tractateFor(date) {
+    const dayIdx = Math.floor((date - START) / (1000 * 60 * 60 * 24));
+    if (dayIdx < 0) return null;
+    let weekIdx = Math.floor(dayIdx / 7);
+    // Shifted cells may inherit a different tractate-week (e.g. a Sunday
+    // borrowed for the FOLLOWING week's Yom Tov takes weekOffset: +1).
+    const key = ymd(date);
+    const s = (typeof SHIFTS !== 'undefined') ? SHIFTS[key] : null;
+    if (s && s.weekOffset) weekIdx += s.weekOffset;
+    return TRACTATES[weekIdx] || null;
+  }
+
+  // Jewish holidays — 5787 (fall 2026 through summer 2027)
+  // Format: 'YYYY-MM-DD': { name, pause: boolean }
+  const HOLIDAYS = {
+    // Tishrei 5787
+    '2026-09-12': { name: 'Rosh Hashanah I', pause: true },
+    '2026-09-13': { name: 'Rosh Hashanah II', pause: true },
+    '2026-09-21': { name: 'Yom Kippur', pause: true },
+    '2026-09-26': { name: 'Sukkot I', pause: true },
+    '2026-09-27': { name: 'Sukkot II', pause: true },
+    '2026-09-28': { name: 'Sukkot III', pause: false },
+    '2026-09-29': { name: 'Sukkot IV', pause: false },
+    '2026-09-30': { name: 'Sukkot V', pause: false },
+    '2026-10-01': { name: 'Sukkot VI', pause: false },
+    '2026-10-02': { name: 'Hoshana Rabbah', pause: false },
+    '2026-10-03': { name: 'Shemini Atzeret', pause: true },
+    '2026-10-04': { name: 'Simchat Torah', pause: true },
+    // Chanukah 5787 (25 Kislev - 2 Tevet)
+    '2026-12-05': { name: 'Chanukah I', pause: false },
+    '2026-12-06': { name: 'Chanukah II', pause: false },
+    '2026-12-07': { name: 'Chanukah III', pause: false },
+    '2026-12-08': { name: 'Chanukah IV', pause: false },
+    '2026-12-09': { name: 'Chanukah V', pause: false },
+    '2026-12-10': { name: 'Chanukah VI', pause: false },
+    '2026-12-11': { name: 'Chanukah VII', pause: false },
+    '2026-12-12': { name: 'Chanukah VIII', pause: false },
+    // Tu B'Shevat
+    '2027-02-03': { name: "Tu B'Shevat", pause: false },
+    // Purim (14 Adar)
+    '2027-03-13': { name: "Erev Purim", pause: false },
+    '2027-03-14': { name: 'Purim', pause: false },
+    '2027-03-15': { name: 'Shushan Purim', pause: false },
+    // Passover (15-22 Nisan) — dates approximate; verify
+    '2027-04-01': { name: 'Passover I', pause: true },
+    '2027-04-02': { name: 'Passover II', pause: true },
+    '2027-04-03': { name: 'Passover III', pause: false },
+    '2027-04-04': { name: 'Passover IV', pause: false },
+    '2027-04-05': { name: 'Passover V', pause: false },
+    '2027-04-06': { name: 'Passover VI', pause: false },
+    '2027-04-07': { name: 'Passover VII', pause: true },
+    '2027-04-08': { name: 'Passover VIII', pause: true },
+    // Post-Passover
+    '2027-04-14': { name: 'Yom HaShoah', pause: false },
+    '2027-04-21': { name: "Yom HaAtzmaut", pause: false },
+    '2027-05-09': { name: "Lag B'Omer", pause: false },
+    '2027-05-16': { name: 'Yom Yerushalayim', pause: false },
+    // Shavuot (6-7 Sivan) — Fri-Sat in 5787
+    '2027-05-21': { name: 'Shavuot I', pause: true },
+    '2027-05-22': { name: 'Shavuot II', pause: true }
+  };
+
+  // Holiday shifts. When Yom Tov lands on a program weekday, we borrow
+  // adjacent slots so each week still delivers 4 learning + 1 Voices, in that order.
+  //   programType: 'program' = weekday learning; 'voices' = the Voices slot.
+  //   weekOffset: shifts which tractate-week this cell inherits (Sun-before-YT
+  //     borrows +1; end-of-week borrows 0).
+  //   note: appears as a small badge on the calendar cell.
+  const SHIFTS = {
+    // Yom Kippur week (Mon Sep 21 blocked) → borrow preceding Sunday.
+    // Pattern: Sun learning → Tue/Wed/Thu learning → Fri Voices.
+    '2026-09-20': { programType: 'program', weekOffset: +1, note: 'For Yom Kippur week' },
+
+    // Passover Week 1 (Thu Apr 1 + Fri Apr 2 blocked) → borrow Sun + Motzei Shabbos.
+    // Pattern: Sun/Mon/Tue/Wed learning → Sat Motzei Voices.
+    '2027-03-28': { programType: 'program', weekOffset: +1, note: 'For Passover I–II week' },
+    '2027-04-03': { programType: 'voices',  weekOffset:  0, note: 'Motzei Shabbos · Voices' },
+
+    // Passover Week 2 (Wed Apr 7 + Thu Apr 8 blocked) → borrow Sun + Motzei Shabbos.
+    // Pattern: Sun/Mon/Tue learning → Fri learning → Sat Motzei Voices.
+    // (Fri stays a normal weekday here, but we override it to LEARNING so Voices lands last.)
+    '2027-04-04': { programType: 'program', weekOffset: +1, note: 'For Passover VII–VIII week' },
+    '2027-04-09': { programType: 'program', weekOffset:  0, note: 'Learning (Voices moved to Sat)' },
+    '2027-04-10': { programType: 'voices',  weekOffset:  0, note: 'Motzei Shabbos · Voices' },
+
+    // Shavuot week (Fri May 21 + Sat May 22 blocked) → borrow following Sunday for Voices.
+    // Pattern: Mon/Tue/Wed/Thu learning → Sun Voices (last episode of the week).
+    '2027-05-23': { programType: 'voices',  weekOffset:  0, note: 'Voices · Shavuot week' }
+  };
+
+  function ymd(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function classifyDay(d) {
+    const key = ymd(d);
+    const holiday = HOLIDAYS[key];
+    const shift = SHIFTS[key];
+    const wd = d.getDay(); // 0=Sun, 6=Sat
+    // Shift overrides everything — turns a Sun/Sat into a program day, or a Thu into Voices.
+    if (shift) return { type: shift.programType, shift };
+    if (wd === 0 || wd === 6) return { type: 'weekend', holiday: holiday || null };
+    if (holiday && holiday.pause) return { type: 'paused', holiday };
+    if (holiday && !holiday.pause) return { type: (wd === 5 ? 'voices' : 'program'), holiday, observed: true };
+    if (wd === 5) return { type: 'voices' };
+    return { type: 'program' };
+  }
+
+  // Weekly content-type themes for the production tracker.
+  // Uses "effective weekday" — for shifted borrows, we treat them by their
+  // ORIGINAL slot (e.g. a Sun-borrowed learning day is treated as a Monday
+  // learning day). For a Motzei-Shabbos Voices slot, treated as Friday.
+  const CONTENT_THEMES = {
+    'monday':      'Key Concepts',
+    'tuesday':     'Meaning',
+    'wednesday':   'In Daily Life',
+    'thursday':    'In History',
+    'voices':      'Voices'
+  };
+  // Sequence within a week (1st learning day of week = Key Concepts, etc.)
+  function contentTypeFor(date, info, weekLearningIndex) {
+    if (info.type === 'voices') return CONTENT_THEMES.voices;
+    // Map weekLearningIndex (0-3 for the four learning slots of the week) to theme
+    const themes = [CONTENT_THEMES.monday, CONTENT_THEMES.tuesday, CONTENT_THEMES.wednesday, CONTENT_THEMES.thursday];
+    return themes[weekLearningIndex] || themes[0];
+  }
+
+  // Build the days array — sequential Day # spans Mon-Fri (program + voices)
+  // Also assign each program day its content theme (Key Concepts / Meaning /
+  // In Daily Life / In History) in cycle order per program week.
+  const days = [];
+  let sequenceN = 0, dailyN = 0, voicesN = 0, pausedN = 0;
+  let weekLearningIdx = 0;      // 0-3 within a week
+  let lastMondayKey = null;
+  let d = new Date(START);
+  while (d <= END) {
+    const info = classifyDay(d);
+    // Reset week counter each Monday (or on the Sunday that borrows for a Monday-blocked week)
+    const wd = d.getDay();
+    // A new "program week" starts on Sunday if that Sunday is a shifted-forward borrow,
+    // otherwise on Monday. Use the Monday-of-this-week as the reset key.
+    const monday = new Date(d); monday.setDate(d.getDate() - ((wd + 6) % 7));
+    const mondayKey = ymd(monday);
+    if (mondayKey !== lastMondayKey) {
+      weekLearningIdx = 0;
+      lastMondayKey = mondayKey;
+    }
+    if (info.type === 'program') {
+      sequenceN++;
+      dailyN++;
+      info.progNum = sequenceN;
+      info.contentType = contentTypeFor(d, info, weekLearningIdx);
+      weekLearningIdx++;
+    } else if (info.type === 'voices') {
+      sequenceN++;
+      voicesN++;
+      info.progNum = sequenceN;
+      info.contentType = CONTENT_THEMES.voices;
+    } else if (info.type === 'paused') {
+      pausedN++;
+    }
+    days.push({ date: new Date(d), info });
+    d.setDate(d.getDate() + 1);
+  }
+
+  // Fill stats
+  const TOTAL_EPISODES = dailyN + voicesN;
+  document.getElementById('stat-daily').innerHTML = `<em>${dailyN}</em>`;
+  document.getElementById('stat-voices').innerHTML = `<em>${voicesN}</em>`;
+  document.getElementById('stat-total').innerHTML = `<em>${TOTAL_EPISODES}</em>`;
+
+  // ============================================================
+  // RECORDED STATE — Firebase Realtime DB with localStorage fallback
+  // ============================================================
+  const RECORDED_KEY = 'td-recorded-episodes';
+  const FIREBASE_PATH = 'talmud-daily-recorded';
+  let currentState = {};    // single source of truth
+  let db = null;
+  let dbRef = null;
+  let syncMode = 'local';   // 'synced' | 'local' | 'offline'
+
+  const syncStatusEl = document.getElementById('sync-status');
+  function setSyncStatus(mode, message) {
+    syncMode = mode;
+    if (!syncStatusEl) return;
+    syncStatusEl.className = 'sync-status ' + mode;
+    syncStatusEl.textContent = message;
+  }
+
+  // Try to initialize Firebase
+  function initFirebase() {
+    if (!FIREBASE_CONFIG.databaseURL) {
+      setSyncStatus('local', 'Local only — see setup instructions in source');
+      loadFromLocalStorage();
+      return;
+    }
+    try {
+      firebase.initializeApp(FIREBASE_CONFIG);
+      db = firebase.database();
+      dbRef = db.ref(FIREBASE_PATH);
+      // Subscribe to real-time updates
+      dbRef.on('value', (snapshot) => {
+        currentState = snapshot.val() || {};
+        applyStateToUI();
+        setSyncStatus('synced', 'Synced · real-time');
+      }, (err) => {
+        console.error('Firebase read failed:', err);
+        setSyncStatus('offline', 'Sync failed — using local');
+        loadFromLocalStorage();
+      });
+    } catch (e) {
+      console.error('Firebase init failed:', e);
+      setSyncStatus('offline', 'Sync unavailable — using local');
+      loadFromLocalStorage();
+    }
+  }
+
+  function loadFromLocalStorage() {
+    try { currentState = JSON.parse(localStorage.getItem(RECORDED_KEY) || '{}'); }
+    catch(e) { currentState = {}; }
+    applyStateToUI();
+  }
+
+  function persistLocal() {
+    localStorage.setItem(RECORDED_KEY, JSON.stringify(currentState));
+  }
+
+  function applyStateToUI() {
+    document.querySelectorAll('.day-cell[data-date-key]').forEach(cell => {
+      const key = cell.dataset.dateKey;
+      if (currentState[key]) cell.classList.add('recorded');
+      else cell.classList.remove('recorded');
+    });
+    updateRecordedStats();
+  }
+
+  function updateRecordedStats() {
+    const n = Object.keys(currentState).length;
+    const remaining = TOTAL_EPISODES - n;
+    const pct = TOTAL_EPISODES ? Math.round((n / TOTAL_EPISODES) * 100) : 0;
+    document.getElementById('stat-recorded').textContent = n;
+    document.getElementById('stat-remaining').textContent = remaining;
+    document.getElementById('stat-pct').textContent = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  function toggleRecorded(dateKey, cellEl) {
+    const isRecorded = !!currentState[dateKey];
+    if (syncMode === 'synced' && dbRef) {
+      // Firebase — cell state will update via the onValue subscription
+      const cellRef = db.ref(`${FIREBASE_PATH}/${dateKey}`);
+      if (isRecorded) cellRef.remove();
+      else cellRef.set(new Date().toISOString());
+    } else {
+      // Local mode — mutate + save immediately
+      if (isRecorded) {
+        delete currentState[dateKey];
+        cellEl.classList.remove('recorded');
+      } else {
+        currentState[dateKey] = new Date().toISOString();
+        cellEl.classList.add('recorded');
+      }
+      persistLocal();
+      updateRecordedStats();
+    }
+  }
+
+  function resetRecorded() {
+    if (!confirm('Clear all recorded checkmarks for EVERYONE using this URL? This cannot be undone.')) return;
+    if (syncMode === 'synced' && dbRef) {
+      dbRef.remove();
+    } else {
+      currentState = {};
+      localStorage.removeItem(RECORDED_KEY);
+      document.querySelectorAll('.day-cell.recorded').forEach(c => c.classList.remove('recorded'));
+      updateRecordedStats();
+    }
+  }
+  window.resetRecorded = resetRecorded;
+
+  // Kick off Firebase initialization
+  initFirebase();
+
+  // Filter toggle: hide recorded episodes
+  document.getElementById('filter-unrecorded').addEventListener('change', (e) => {
+    document.body.classList.toggle('hide-recorded', e.target.checked);
+  });
+
+  // Group by month, render
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const cal = document.getElementById('calendar');
+  const nav = document.getElementById('month-nav');
+
+  let currentMonth = null;
+  let currentMonthBlock = null;
+  let currentGrid = null;
+  const monthStats = {};
+
+  // First pass: compute per-month stats
+  days.forEach(({date, info}) => {
+    const key = `${date.getFullYear()}-${date.getMonth()}`;
+    if (!monthStats[key]) monthStats[key] = { daily: 0, voices: 0, paused: 0 };
+    if (info.type === 'program') monthStats[key].daily++;
+    if (info.type === 'voices') monthStats[key].voices++;
+    if (info.type === 'paused') monthStats[key].paused++;
+  });
+
+  // Helper: build a day cell (used for program days + pre/post-program cells)
+  function buildCell(date, info) {
+    const cell = document.createElement('div');
+    let classes = ['day-cell', info.type];
+    if (info.observed) classes.push('observed');
+    if (info.shift) classes.push('shifted');
+    cell.className = classes.join(' ');
+    const dateKey = ymd(date);
+    cell.dataset.dateKey = dateKey;
+    const tract = (info.type === 'program' || info.type === 'voices' || info.type === 'paused') ? tractateFor(date) : null;
+    let content = `<div class="date">${date.getDate()}</div>`;
+    if (info.type === 'program') {
+      content += `<div class="prog-num">Day ${info.progNum}</div>`;
+      if (info.contentType) {
+        content += `<div class="content-type">${info.contentType}</div>`;
+      }
+      if (tract) {
+        content += `<div class="tractate">${tract.name}${tract.sub ? `<em>${tract.sub}</em>` : ''}</div>`;
+      }
+    } else if (info.type === 'voices') {
+      content += `<div class="prog-num">Day ${info.progNum}</div>`;
+      content += `<div class="content-type">Voices</div>`;
+      if (tract) {
+        content += `<div class="tractate">${tract.name}</div>`;
+      }
+    } else if (info.type === 'weekend') {
+      if (info.holiday) {
+        content += `<div class="holiday">${info.holiday.name}</div>`;
+        content += `<div class="type">Off</div>`;
+      } else {
+        content += `<div class="type">Off</div>`;
+      }
+    } else if (info.type === 'paused') {
+      content += `<div class="holiday">${info.holiday.name}</div>`;
+      if (tract) {
+        content += `<div class="tractate">${tract.name}</div>`;
+      } else {
+        content += `<div class="type">Paused</div>`;
+      }
+    } else if (info.type === 'pre') {
+      content += `<div class="type">Pre-launch</div>`;
+    } else if (info.type === 'post') {
+      content += `<div class="type">Post-Siyum</div>`;
+    }
+    if (info.observed && info.holiday) {
+      content += `<div class="holiday-observed">${info.holiday.name}</div>`;
+    }
+    if (info.shift) {
+      content += `<div class="shift-note">${info.shift.note}</div>`;
+    }
+    cell.innerHTML = content;
+
+    // Wire click-to-toggle for program + voices cells only
+    if (info.type === 'program' || info.type === 'voices') {
+      cell.addEventListener('click', () => toggleRecorded(dateKey, cell));
+      cell.setAttribute('role', 'button');
+      cell.setAttribute('tabindex', '0');
+      cell.setAttribute('aria-label', `Toggle recorded status for ${dateKey}`);
+      cell.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleRecorded(dateKey, cell);
+        }
+      });
+      // Restore recorded state (Firebase or localStorage — applied via applyStateToUI too)
+      if (currentState[dateKey]) cell.classList.add('recorded');
+    }
+    return cell;
+  }
+
+  // Extend the days array with pre-program days (Aug 1-23, 2026) and post-program days (Jun 7-30, 2027)
+  // so the first and last months render as complete grids with correct weekday alignment.
+  const preDays = [];
+  const preStart = new Date(START.getFullYear(), START.getMonth(), 1);
+  let pd = new Date(preStart);
+  while (pd < START) {
+    preDays.push({ date: new Date(pd), info: { type: 'pre' } });
+    pd.setDate(pd.getDate() + 1);
+  }
+  const postDays = [];
+  const postEnd = new Date(END.getFullYear(), END.getMonth() + 1, 0); // last day of end month
+  let od = new Date(END);
+  od.setDate(od.getDate() + 1);
+  while (od <= postEnd) {
+    postDays.push({ date: new Date(od), info: { type: 'post' } });
+    od.setDate(od.getDate() + 1);
+  }
+  const allDays = [...preDays, ...days, ...postDays];
+
+  // Render
+  allDays.forEach(({date, info}) => {
+    const mKey = `${date.getFullYear()}-${date.getMonth()}`;
+    if (mKey !== currentMonth) {
+      currentMonth = mKey;
+      const block = document.createElement('div');
+      block.className = 'month-block';
+      block.id = `m-${mKey}`;
+      const st = monthStats[mKey] || { daily: 0, voices: 0, paused: 0 };
+      const statLine = st.daily || st.voices || st.paused
+        ? `<em>${st.daily}</em> daily · <em>${st.voices}</em> voices${st.paused ? ` · <em>${st.paused}</em> paused` : ''}`
+        : `<em>0</em> program days`;
+      block.innerHTML = `
+        <div class="month-head">
+          <div class="m-title">${MONTHS[date.getMonth()]}<span class="yr">${date.getFullYear()}</span></div>
+          <div class="m-stats">${statLine}</div>
+        </div>
+        <div class="weekday-row">
+          ${WEEKDAYS.map(w => `<div class="wd">${w}</div>`).join('')}
+        </div>
+        <div class="month-grid"></div>`;
+      cal.appendChild(block);
+      currentMonthBlock = block;
+      currentGrid = block.querySelector('.month-grid');
+      // pad blank cells before day 1 of the month
+      const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+      for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
+        const empty = document.createElement('div');
+        empty.className = 'day-cell empty';
+        currentGrid.appendChild(empty);
+      }
+      // Add nav pill
+      const navLink = document.createElement('a');
+      navLink.href = `#m-${mKey}`;
+      navLink.textContent = `${MONTHS[date.getMonth()].slice(0,3)} ${date.getFullYear()}`;
+      nav.appendChild(navLink);
+    }
+    currentGrid.appendChild(buildCell(date, info));
+  });
+
+  // After all cells rendered, initialize the recorded-stats display
+  updateRecordedStats();
+
+  // Pad trailing empty cells for last month if it doesn't end on Saturday
+  const lastDate = allDays[allDays.length - 1].date;
+  const trailing = 6 - lastDate.getDay();
+  if (trailing > 0 && currentGrid) {
+    for (let i = 0; i < trailing; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'day-cell empty';
+      currentGrid.appendChild(empty);
+    }
+  }
+
+  // Highlight today if within range (won't hit for a 2026 date rendered in the future)
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  if (today >= START && today <= END) {
+    const idx = days.findIndex(d => d.date.getTime() === today.getTime());
+    if (idx > -1) {
+      // find the cell — this is simplified; we could ID each cell for precision
+    }
+  }
+</script>
+
+</body>
+</html>
