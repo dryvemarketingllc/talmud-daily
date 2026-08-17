@@ -423,43 +423,46 @@
     box-shadow: inset 0 0 0 2px rgba(80,14,15,0.25);
   }
   .day-cell.recorded {
-    background: rgba(167,168,133,0.22) !important;
+    background: #B8D48C !important;
+    box-shadow: inset 0 0 0 2px #6B9A3E;
   }
   .day-cell.recorded .content-type,
   .day-cell.recorded .tractate,
   .day-cell.recorded .date,
   .day-cell.recorded .prog-num {
-    opacity: 0.5;
+    color: #2E4A18;
+  }
+  .day-cell.recorded .content-type {
+    color: #4A6D24;
   }
   .day-cell.recorded::before {
     content: "✓";
     position: absolute;
     top: 6px;
     right: 8px;
-    color: #3a6b1a;
-    font-size: 16px;
+    color: #FFFFFF;
+    font-size: 15px;
     font-weight: 900;
     line-height: 1;
-    background: #ffffff;
+    background: #6B9A3E;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid #3a6b1a;
   }
   /* Hide-recorded filter */
   body.hide-recorded .day-cell.recorded {
-    opacity: 0.15;
+    opacity: 0.25;
     pointer-events: none;
   }
   body.hide-recorded .day-cell.recorded::before { opacity: 0.4; }
 
   /* Recorded swatch in legend */
   .swatch.recorded {
-    background: rgba(167,168,133,0.22);
-    border-color: #3a6b1a;
+    background: #B8D48C;
+    border-color: #6B9A3E;
     position: relative;
   }
   .swatch.recorded::after {
@@ -469,8 +472,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #3a6b1a;
-    font-size: 11px;
+    color: #2E4A18;
+    font-size: 12px;
     font-weight: 900;
   }
 
@@ -731,9 +734,9 @@
   // Weeks 1-3 = Foundations, Week 4 = Zeraim/Brachos, Weeks 5-15 = Moed,
   // Weeks 16-22 = Nashim, Weeks 23-30 = Nezikin, Weeks 31-39 = Kodashim, Week 40 = Tahoros
   const TRACTATES = [
-    { name: 'Foundations',  seder: 'Weeks 1–3', sub: 'What the Talmud is' },
-    { name: 'Foundations',  seder: 'Weeks 1–3', sub: 'Halacha & aggadah' },
-    { name: 'Foundations',  seder: 'Weeks 1–3', sub: 'The everyday & sacred' },
+    { name: 'Foundations',  seder: 'Weeks 1–3' },
+    { name: 'Foundations',  seder: 'Weeks 1–3' },
+    { name: 'Foundations',  seder: 'Weeks 1–3' },
     { name: 'Brachos',      seder: 'Zeraim' },
     { name: 'Shabbos',      seder: 'Moed' },
     { name: 'Eruvin',       seder: 'Moed' },
