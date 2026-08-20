@@ -1296,54 +1296,78 @@
     margin: 0 auto;
     max-width: 62ch;
   }
-  .dedication .divider {
+  .dedication > .divider {
     width: 48px;
     height: 1px;
     background: var(--sage);
     margin: 36px auto 22px;
     border: 0;
   }
+  .dedication .sponsors-inner {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 24px;
+    text-align: center;
+  }
   .dedication .sponsors {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
     gap: 40px;
-    max-width: 960px;
-    margin-left: auto;
-    margin-right: auto;
   }
   .dedication .sponsors li {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 17px;
+    font-size: 16px;
     color: var(--ink);
     line-height: 1.4;
     margin: 0;
     padding: 0;
     text-align: center;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .dedication .sponsors li.logo {
     line-height: 0;
+    flex-shrink: 1;
   }
   .dedication .sponsors li.logo img {
-    height: 56px;
+    height: 48px;
     width: auto;
-    max-width: 200px;
+    max-width: 180px;
     display: block;
   }
+  .dedication .sponsor-cta {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    margin: 28px 0 0;
+    text-align: center;
+  }
+  .dedication .sponsor-cta a {
+    color: var(--burgundy);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(80,14,15,0.35);
+    padding-bottom: 1px;
+    font-weight: 500;
+    transition: border-color 0.15s;
+  }
+  .dedication .sponsor-cta a:hover { border-bottom-color: var(--burgundy); }
 
   /* RESPONSIVE */
   @media (max-width: 880px) {
     .dedication { padding: 44px 24px; }
     .dedication .body { font-size: 16px; }
-    .dedication .sponsors { flex-direction: column; gap: 18px; }
-    .dedication .sponsors li { font-size: 16px; }
-    .dedication .sponsors li.logo img { height: 48px; }
-    .dedication .divider { margin: 28px auto 18px; }
+    .dedication .sponsors { flex-direction: column; flex-wrap: wrap; gap: 18px; }
+    .dedication .sponsors li { font-size: 15px; white-space: normal; }
+    .dedication .sponsors li.logo img { height: 42px; }
+    .dedication > .divider { margin: 28px auto 18px; }
+    .dedication .sponsor-cta { font-size: 12px; margin-top: 22px; }
     .counter-band .counter-inner { padding: 44px 24px; }
     .counter-band .cb-sub { margin-bottom: 22px; }
     nav.top .inner { position: relative; padding: 16px 24px; }
@@ -1840,9 +1864,11 @@
     <p class="body">
       Rabbi Moshe Hauer always saw the potential of 18Forty, providing us with constant encouragement, guidance, and direction while challenging us to find new avenues to share Torah. Though he did not live to see its full realization, Talmud Daily reflects so much of the vision Rabbi Hauer championed and embodied throughout his life: building bridges between communities, finding creative ways to bring Torah to new audiences, and doing so while remaining deeply anchored in a life of Torah. We are honored to dedicate Talmud Daily to his memory. May his memory be a blessing.
     </p>
+  </div>
 
-    <hr class="divider" aria-hidden="true">
+  <hr class="divider" aria-hidden="true">
 
+  <div class="sponsors-inner">
     <div class="eyebrow">Founding Sponsors</div>
     <ul class="sponsors">
       <li>Reuven Moskowitz and Family</li>
@@ -1853,6 +1879,9 @@
       <li>Raanan and Nicole Agus</li>
       <li>Janet &amp; Lior Hod and Family</li>
     </ul>
+    <p class="sponsor-cta">
+      <a href="give.html">Sponsor a day or week of learning →</a>
+    </p>
   </div>
 </section>
 
