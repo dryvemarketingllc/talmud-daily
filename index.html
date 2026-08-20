@@ -660,64 +660,6 @@
   }
   .tractates li:last-child { border-bottom: none; }
 
-  /* SEDER SPONSORS */
-  .sponsor-note {
-    font-family: var(--sans);
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    color: var(--muted);
-    font-style: italic;
-    margin: 8px 0 4px;
-  }
-  .sponsor-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    margin: 32px 0;
-  }
-  .sponsor-seder {
-    background: var(--paper-pure);
-    border: 1px solid var(--rule);
-    padding: 24px 22px;
-    border-radius: 1px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .sponsor-seder .seder-h {
-    border-bottom: 1px solid var(--rule);
-    padding-bottom: 14px;
-    margin: 0;
-  }
-  .sponsor-by-label {
-    font-family: var(--sans);
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--burgundy);
-    font-weight: 700;
-  }
-  .sponsor-name {
-    font-family: var(--serif);
-    font-size: 20px;
-    font-style: italic;
-    color: var(--ink);
-    line-height: 1.2;
-    margin-top: 6px;
-  }
-  .sponsor-name.available {
-    font-style: normal;
-    color: var(--muted);
-    font-size: 15px;
-    letter-spacing: 0.02em;
-  }
-  @media (max-width: 900px) {
-    .sponsor-grid { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 560px) {
-    .sponsor-grid { grid-template-columns: 1fr; }
-  }
-
   /* THE RHYTHM */
   .rhythm-week {
     display: grid;
@@ -1037,6 +979,72 @@
   }
   .founding-band .fb-cta:hover { background: var(--sage); color: var(--ink); }
 
+  /* LEARNER COUNT BAND — replaces the Founding 100 band */
+  .counter-band {
+    background: var(--burgundy);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .counter-band .counter-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 96px 32px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .counter-band .cb-kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .counter-band .cb-number {
+    font-family: var(--serif);
+    font-size: clamp(96px, 14vw, 176px);
+    line-height: 1;
+    color: var(--paper);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .counter-band .cb-label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(28px, 3vw, 36px);
+    color: var(--paper);
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .counter-band .cb-sub {
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: var(--paper);
+    opacity: 0.75;
+    margin-bottom: 40px;
+  }
+  .counter-band .cb-cta {
+    display: inline-block;
+    background: var(--paper);
+    color: var(--burgundy);
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border: none;
+    padding: 18px 32px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .counter-band .cb-cta:hover { background: var(--sage); color: var(--ink); }
+
   /* AMBASSADORS — host committee grid (compact: 2 rows × 6 cols) */
   .ambassadors .amb-grid {
     margin-top: 32px;
@@ -1250,8 +1258,73 @@
   }
   footer.site .copyright { color: rgba(245,241,232,0.35); }
 
+  /* DEDICATION + FOUNDING SPONSORS */
+  .dedication {
+    background: var(--paper-pure);
+    padding: 96px 32px;
+    border-top: 1px solid var(--rule);
+  }
+  .dedication .inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .dedication .eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 28px;
+  }
+  .dedication h2 {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.008em;
+    color: var(--ink);
+    margin: 0 0 40px;
+  }
+  .dedication h2 em { font-style: italic; color: var(--burgundy); }
+  .dedication .body {
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 auto;
+    max-width: 60ch;
+  }
+  .dedication .divider {
+    width: 60px;
+    height: 1px;
+    background: var(--sage);
+    margin: 64px auto 40px;
+    border: 0;
+  }
+  .dedication .sponsors {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .dedication .sponsors li {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 6px 0;
+  }
+
   /* RESPONSIVE */
   @media (max-width: 880px) {
+    .dedication { padding: 64px 24px; }
+    .dedication .body { font-size: 17px; }
+    .dedication .sponsors li { font-size: 17px; }
+    .dedication .divider { margin: 48px auto 32px; }
+    .counter-band .counter-inner { padding: 64px 24px; }
+    .counter-band .cb-sub { margin-bottom: 32px; }
     nav.top .inner { position: relative; padding: 16px 24px; }
     nav.top .links {
       display: none;
@@ -1428,41 +1501,6 @@
   </div>
 </section>
 
-<!-- THE DEDICATIONS -->
-<section class="s wide" id="dedications">
-  <div class="section-eyebrow">Dedications</div>
-  <h2 class="section-h">Each seder, <em>carried by someone.</em></h2>
-  <p class="section-lede">The whole Shas is learned together — and each of the six Sedarim can be dedicated in honor or memory of someone who matters to you.</p>
-  <p class="sponsor-note">Placeholder names shown below — real dedications to be confirmed.</p>
-
-  <div class="sponsor-grid">
-    <div class="sponsor-seder">
-      <div class="seder-h"><div class="seder-name">Zeraim</div><div class="seder-translation">Agriculture</div></div>
-      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name">The Rosenberg Family</div></div>
-    </div>
-    <div class="sponsor-seder">
-      <div class="seder-h"><div class="seder-name">Moed</div><div class="seder-translation">Holidays</div></div>
-      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name">In memory of Shmuel ben Yaakov <span style="font-style:normal;">z"l</span></div></div>
-    </div>
-    <div class="sponsor-seder">
-      <div class="seder-h"><div class="seder-name">Nashim</div><div class="seder-translation">Family Law</div></div>
-      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name">The Adler Family</div></div>
-    </div>
-    <div class="sponsor-seder">
-      <div class="seder-h"><div class="seder-name">Nezikin</div><div class="seder-translation">Damages</div></div>
-      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name">In honor of the Weiss Family</div></div>
-    </div>
-    <div class="sponsor-seder">
-      <div class="seder-h"><div class="seder-name">Kodashim</div><div class="seder-translation">Sacrifices</div></div>
-      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name available">Available — become a dedicant</div></div>
-    </div>
-    <div class="sponsor-seder">
-      <div class="seder-h"><div class="seder-name">Tahoros</div><div class="seder-translation">Purity</div></div>
-      <div><div class="sponsor-by-label">Dedicated by</div><div class="sponsor-name available">Available — become a dedicant</div></div>
-    </div>
-  </div>
-</section>
-
 <!-- THE RHYTHM -->
 <section class="s" id="rhythm">
   <div class="rhythm-intro">
@@ -1519,18 +1557,17 @@
   </div>
 </section>
 
-<!-- FOUNDING 100 BAND — burgundy interstitial -->
-<section class="founding-band" id="founding">
-  <div class="inner">
-    <div class="fb-visual">
-      <img src="tdbrand/photos/founding-perk.png" alt="How the Talmud Can Change Your Life by Liel Leibovitz">
-    </div>
-    <div class="fb-text">
-      <div class="fb-kicker">Founding 100 Perk</div>
-      <div class="fb-headline">Free book + Gemara Card.</div>
-      <div class="fb-body">The first 100 to sign up receive a copy of <em>How the Talmud Can Change Your Life</em> by Liel Leibovitz, plus a <a href="https://korenpub.com/products/the-gemara-card" target="_blank" rel="noopener">Koren Gemara Card</a> to start the journey.</div>
-    </div>
-    <button type="button" class="fb-cta" onclick="openSignup()">Claim a spot</button>
+<!-- LEARNER COUNT BAND — burgundy interstitial with animated counter -->
+<!-- NOTE FOR JOE/IZZY: swap data-count value with a live signup count from the
+     backend (WordPress user meta, form plugin count, or a small JSON endpoint
+     at /wp-json/td/v1/signup-count). The counter animates on scroll-into-view. -->
+<section class="counter-band" id="counter">
+  <div class="counter-inner">
+    <div class="cb-kicker">Already signed up</div>
+    <div class="cb-number" id="learner-count" data-count="3247">0</div>
+    <div class="cb-label">Daily Learners</div>
+    <div class="cb-sub">and counting — begins August 24, 2026</div>
+    <button type="button" class="cb-cta" onclick="openSignup()">Join them →</button>
   </div>
 </section>
 
@@ -1717,7 +1754,83 @@
     document.body.style.overflow = '';
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSignup(); });
+
+  // ============================================================
+  // LEARNER COUNT-UP — animates when the counter band scrolls into view
+  // ============================================================
+  // For Joe/Izzy: to make this dynamic, replace the data-count attribute value
+  // on #learner-count with the current signup count from the backend.
+  // Simplest options:
+  //   (a) Inject via WordPress: <div id="learner-count" data-count="<?php echo $signupCount; ?>">
+  //   (b) Fetch async from an endpoint before animating (see commented-out code below)
+  // ============================================================
+  (function () {
+    const el = document.getElementById('learner-count');
+    if (!el) return;
+
+    // OPTIONAL: uncomment to fetch a live count before animating.
+    // fetch('/wp-json/td/v1/signup-count')
+    //   .then(r => r.json())
+    //   .then(d => { el.dataset.count = d.count; })
+    //   .catch(() => {}); // fall back to the hardcoded data-count
+
+    const target = parseInt(el.dataset.count, 10) || 0;
+    const duration = 1800; // ms
+    let started = false;
+
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+    function animateCount() {
+      const startTime = performance.now();
+      function frame(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const value = Math.round(easeOutCubic(t) * target);
+        el.textContent = value.toLocaleString();
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // Respect prefers-reduced-motion — snap to final value without animating
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      el.textContent = target.toLocaleString();
+      return;
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !started) {
+          started = true;
+          animateCount();
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    io.observe(el);
+  })();
 </script>
+
+<!-- DEDICATION + FOUNDING SPONSORS -->
+<section class="dedication" aria-labelledby="dedication-heading">
+  <div class="inner">
+    <div class="eyebrow">In Dedication</div>
+    <h2 id="dedication-heading">Rabbi Moshe Hauer, <em>z"l</em></h2>
+    <p class="body">
+      Rabbi Moshe Hauer always saw the potential of 18Forty, providing us with constant encouragement, guidance, and direction while challenging us to find new avenues to share Torah. Though he did not live to see its full realization, Talmud Daily reflects so much of the vision Rabbi Hauer championed and embodied throughout his life: building bridges between communities, finding creative ways to bring Torah to new audiences, and doing so while remaining deeply anchored in a life of Torah. We are honored to dedicate Talmud Daily to his memory. May his memory be a blessing.
+    </p>
+
+    <hr class="divider" aria-hidden="true">
+
+    <div class="eyebrow">Founding Sponsors</div>
+    <ul class="sponsors">
+      <li>Micah Philanthropies</li>
+      <li>Raanan and Nicole Agus</li>
+      <li>Janet &amp; Lior Hod and Family</li>
+      <li>Reuven Moskowitz and Family</li>
+    </ul>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer class="site">
