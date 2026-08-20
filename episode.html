@@ -702,10 +702,19 @@
 <!-- SPONSOR LINES — day + week + seder dedications. Any combination can be present or empty per episode. -->
 <div class="sponsors">
   <div class="sponsors-inner">
-    <!-- FILLED STATE — when the tier has a sponsor -->
+    <!--
+      RENDER LOGIC FOR OU DEV:
+      • TODAY  — if sponsored: filled line. If not sponsored: empty-state line (invite link).
+      • THIS WEEK — if sponsored: filled line. If not sponsored: empty-state line (invite link).
+      • SEDER  — if sponsored: filled line. If NOT sponsored: hide the row entirely
+                 (seder-tier is a $1,800 commitment and doesn't get filled often; showing
+                 "not yet sponsored" every day would read as always-vacant).
+    -->
+    <!-- FILLED STATE example -->
     <p class="sponsor-line"><span class="sponsor-label">Today</span>Sponsored by <strong>The Smith Family</strong> in memory of <em>Rachel Goldstein, z"l</em>.</p>
-    <!-- EMPTY STATE — when the tier has no sponsor yet, invite one via a link to the give page -->
+    <!-- EMPTY STATE example — link goes to the give page -->
     <p class="sponsor-line empty"><span class="sponsor-label">This week</span>This week is not yet sponsored. <a href="give.html">Sponsor this week &rarr;</a></p>
+    <!-- SEDER row shown only when filled -->
     <p class="sponsor-line"><span class="sponsor-label">Zeraim</span>Sponsored by <strong>The Rosen Foundation</strong> in loving memory of <em>Rabbi Joseph Rosen, z"l</em>.</p>
   </div>
 </div>
