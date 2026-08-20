@@ -989,7 +989,7 @@
   .counter-band .counter-inner {
     max-width: 720px;
     margin: 0 auto;
-    padding: 96px 32px;
+    padding: 56px 32px;
     text-align: center;
     position: relative;
     z-index: 2;
@@ -1001,45 +1001,45 @@
     text-transform: uppercase;
     color: var(--sage);
     font-weight: 600;
-    margin-bottom: 18px;
+    margin-bottom: 10px;
   }
   .counter-band .cb-number {
     font-family: var(--serif);
-    font-size: clamp(96px, 14vw, 176px);
+    font-size: clamp(72px, 10vw, 120px);
     line-height: 1;
     color: var(--paper);
     font-weight: 400;
     letter-spacing: -0.03em;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     font-variant-numeric: tabular-nums;
   }
   .counter-band .cb-label {
     font-family: var(--serif);
     font-style: italic;
-    font-size: clamp(28px, 3vw, 36px);
+    font-size: clamp(22px, 2.4vw, 28px);
     color: var(--paper);
     line-height: 1.1;
-    margin-bottom: 24px;
+    margin-bottom: 14px;
   }
   .counter-band .cb-sub {
     font-family: var(--sans);
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 0.02em;
     color: var(--paper);
     opacity: 0.75;
-    margin-bottom: 40px;
+    margin-bottom: 26px;
   }
   .counter-band .cb-cta {
     display: inline-block;
     background: var(--paper);
     color: var(--burgundy);
     font-family: var(--sans);
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     font-weight: 600;
     border: none;
-    padding: 18px 32px;
+    padding: 14px 26px;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
   }
@@ -1261,7 +1261,7 @@
   /* DEDICATION + FOUNDING SPONSORS */
   .dedication {
     background: var(--paper-pure);
-    padding: 96px 32px;
+    padding: 56px 32px;
     border-top: 1px solid var(--rule);
   }
   .dedication .inner {
@@ -1276,31 +1276,31 @@
     text-transform: uppercase;
     color: var(--muted);
     font-weight: 600;
-    margin-bottom: 28px;
+    margin-bottom: 16px;
   }
   .dedication h2 {
     font-family: var(--serif);
-    font-size: clamp(32px, 4vw, 44px);
+    font-size: clamp(26px, 3.2vw, 34px);
     font-weight: 400;
-    line-height: 1.1;
+    line-height: 1.15;
     letter-spacing: -0.008em;
     color: var(--ink);
-    margin: 0 0 40px;
+    margin: 0 0 22px;
   }
   .dedication h2 em { font-style: italic; color: var(--burgundy); }
   .dedication .body {
     font-family: var(--serif);
-    font-size: 20px;
-    line-height: 1.6;
+    font-size: 17px;
+    line-height: 1.55;
     color: var(--ink-soft);
     margin: 0 auto;
-    max-width: 60ch;
+    max-width: 62ch;
   }
   .dedication .divider {
-    width: 60px;
+    width: 48px;
     height: 1px;
     background: var(--sage);
-    margin: 64px auto 40px;
+    margin: 36px auto 22px;
     border: 0;
   }
   .dedication .sponsors {
@@ -1311,20 +1311,20 @@
   .dedication .sponsors li {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 20px;
+    font-size: 17px;
     color: var(--ink);
-    line-height: 1.6;
-    margin: 6px 0;
+    line-height: 1.5;
+    margin: 3px 0;
   }
 
   /* RESPONSIVE */
   @media (max-width: 880px) {
-    .dedication { padding: 64px 24px; }
-    .dedication .body { font-size: 17px; }
-    .dedication .sponsors li { font-size: 17px; }
-    .dedication .divider { margin: 48px auto 32px; }
-    .counter-band .counter-inner { padding: 64px 24px; }
-    .counter-band .cb-sub { margin-bottom: 32px; }
+    .dedication { padding: 44px 24px; }
+    .dedication .body { font-size: 16px; }
+    .dedication .sponsors li { font-size: 16px; }
+    .dedication .divider { margin: 28px auto 18px; }
+    .counter-band .counter-inner { padding: 44px 24px; }
+    .counter-band .cb-sub { margin-bottom: 22px; }
     nav.top .inner { position: relative; padding: 16px 24px; }
     nav.top .links {
       display: none;
@@ -1566,7 +1566,7 @@
     <div class="cb-kicker">Already signed up</div>
     <div class="cb-number" id="learner-count" data-count="3247">0</div>
     <div class="cb-label">Daily Learners</div>
-    <div class="cb-sub">and counting — begins August 24, 2026</div>
+    <div class="cb-sub">and counting — catch up anytime</div>
     <button type="button" class="cb-cta" onclick="openSignup()">Join them →</button>
   </div>
 </section>
