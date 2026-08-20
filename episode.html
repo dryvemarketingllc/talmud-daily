@@ -168,6 +168,19 @@
     display: inline-block;
     vertical-align: 2px;
   }
+  /* Empty-state — when this tier has no sponsor yet, invite one */
+  .sponsor-line.empty {
+    color: var(--muted);
+  }
+  .sponsor-line.empty a {
+    color: var(--burgundy);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(80,14,15,0.35);
+    padding-bottom: 1px;
+    font-style: italic;
+    transition: border-color 0.15s;
+  }
+  .sponsor-line.empty a:hover { border-bottom-color: var(--burgundy); }
 
   /* PLAYER BAND */
   .player-band {
@@ -652,7 +665,7 @@
 <!-- NAV -->
 <nav class="top">
   <div class="inner">
-    <a class="wordmark" href="/" aria-label="Talmud Daily home">
+    <a class="wordmark" href="index.html" aria-label="Talmud Daily home">
       <img src="tdbrand/wordmark-ink.svg" alt="Talmud Daily">
     </a>
     <div class="links">
@@ -689,8 +702,10 @@
 <!-- SPONSOR LINES — day + week + seder dedications. Any combination can be present or empty per episode. -->
 <div class="sponsors">
   <div class="sponsors-inner">
+    <!-- FILLED STATE — when the tier has a sponsor -->
     <p class="sponsor-line"><span class="sponsor-label">Today</span>Sponsored by <strong>The Smith Family</strong> in memory of <em>Rachel Goldstein, z"l</em>.</p>
-    <p class="sponsor-line"><span class="sponsor-label">This week</span>Sponsored by <strong>Michael and Sarah Cohen</strong> in honor of <em>their grandparents</em>.</p>
+    <!-- EMPTY STATE — when the tier has no sponsor yet, invite one via a link to the give page -->
+    <p class="sponsor-line empty"><span class="sponsor-label">This week</span>This week is not yet sponsored. <a href="give.html">Sponsor this week &rarr;</a></p>
     <p class="sponsor-line"><span class="sponsor-label">Zeraim</span>Sponsored by <strong>The Rosen Foundation</strong> in loving memory of <em>Rabbi Joseph Rosen, z"l</em>.</p>
   </div>
 </div>
@@ -849,7 +864,7 @@
 <!-- FOOTER -->
 <footer class="site">
   <div class="inner">
-    <a class="wordmark" href="/">
+    <a class="wordmark" href="index.html">
       <img src="tdbrand/wordmark-cream.svg" alt="Talmud Daily">
     </a>
     <span>A project of 18Forty · A programmatic division of the OU</span>
