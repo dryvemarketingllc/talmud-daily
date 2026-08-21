@@ -576,8 +576,8 @@
   }
   .btn-complete:hover { background: var(--ink); }
   .btn-complete svg { width: 14px; height: 14px; margin-right: 10px; vertical-align: -2px; }
-  .btn-complete.done,
-  .btn-complete.done:hover { background: #6B9A3E; color: #FFFFFF; cursor: default; }
+  .btn-complete.done { background: #6B9A3E; color: #FFFFFF; }
+  .btn-complete.done:hover { background: #557a2f; color: #FFFFFF; }
 
   /* Compact mark-complete button under the video player */
   .mark-inline {
@@ -588,15 +588,7 @@
     padding: 12px 24px;
     font-size: 12px;
   }
-  .mark-inline .auto-note {
-    display: block;
-    margin-top: 10px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 13px;
-    color: var(--paper);
-    opacity: 0.6;
-  }
+  .mark-inline .btn-complete.done { cursor: pointer; }
 
   /* PREV/NEXT NAV */
   .step-nav {
@@ -784,7 +776,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="5,12 10,17 19,7"/></svg>
         Mark complete
       </button>
-      <span class="auto-note">Or just watch — auto-marks at 80%</span>
     </div>
   </div>
 </section>
@@ -925,13 +916,18 @@
   });
 
   // ============================================================
-  // MARK COMPLETE — shared state across all [data-mark-complete] buttons
+  // MARK COMPLETE — toggle, shared state across all [data-mark-complete] buttons
   // (one under the player + one at the bottom of the page)
+  // Both buttons stay in sync, and clicking a completed button unmarks it.
   // ============================================================
   (function () {
     const STORAGE_KEY = 'td-completed-episodes';
     const buttons = document.querySelectorAll('[data-mark-complete]');
     if (!buttons.length) return;
+
+    // Session-only flag: once a user explicitly unmarks an episode, don't let
+    // auto-mark re-fire and undo their choice this session.
+    const suppressAuto = new Set();
 
     function getCompleted() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
@@ -943,37 +939,53 @@
 
     function markComplete(episodeId, source) {
       const data = getCompleted();
-      if (data[episodeId]) return; // already marked
+      if (data[episodeId]) return;
       data[episodeId] = { at: new Date().toISOString(), source: source || 'manual' };
       saveCompleted(data);
-      updateButtons(episodeId);
-
-      // For Joe/OU dev: fire an analytics event so we can measure completion
-      // rates and which trigger (manual vs. auto-80%) is more common.
+      renderButtons(episodeId, true);
       if (window.gtag) {
-        window.gtag('event', 'episode_completed', {
-          episode_id: episodeId,
-          trigger: source || 'manual'
-        });
+        window.gtag('event', 'episode_completed', { episode_id: episodeId, trigger: source || 'manual' });
       }
     }
 
-    function updateButtons(episodeId) {
+    function unmark(episodeId) {
+      const data = getCompleted();
+      if (!data[episodeId]) return;
+      delete data[episodeId];
+      saveCompleted(data);
+      suppressAuto.add(episodeId); // don't let auto-mark re-fire this session
+      renderButtons(episodeId, false);
+      if (window.gtag) {
+        window.gtag('event', 'episode_uncompleted', { episode_id: episodeId });
+      }
+    }
+
+    function renderButtons(episodeId, isDone) {
       buttons.forEach(btn => {
-        if (btn.dataset.episodeId === episodeId) {
-          btn.classList.add('done');
-          btn.disabled = true;
+        if (btn.dataset.episodeId !== episodeId) return;
+        btn.classList.toggle('done', isDone);
+        if (isDone) {
           btn.innerHTML = '✓&nbsp;&nbsp;Completed';
+        } else {
+          // Restore the button's original label depending on where it lives
+          const isInline = btn.closest('.mark-inline');
+          const iconAndLabel = isInline
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="5,12 10,17 19,7"/></svg> Mark complete'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg> I did today\'s episode';
+          btn.innerHTML = iconAndLabel;
         }
       });
     }
 
-    // Wire click on all buttons
+    // Wire toggle on all buttons
     buttons.forEach(btn => {
       const episodeId = btn.dataset.episodeId;
       // Restore state on load
-      if (getCompleted()[episodeId]) updateButtons(episodeId);
-      btn.addEventListener('click', () => markComplete(episodeId, 'manual'));
+      if (getCompleted()[episodeId]) renderButtons(episodeId, true);
+      btn.addEventListener('click', () => {
+        if (getCompleted()[episodeId]) unmark(episodeId);
+        else markComplete(episodeId, 'manual');
+      });
     });
 
     // ============================================================
@@ -984,23 +996,20 @@
     // ends up in the .video-stage / .audio-stage containers when JW/Vimeo is wired.
     //
     // If the production player is:
-    //   • JW Player: use jwplayer(id).on('time', function(e){ ... e.position / e.duration ... })
-    //   • Vimeo:     use player.on('timeupdate', function(d){ ... d.percent >= 0.8 ... })
+    //   • JW Player: use jwplayer(id).on('time', function(e){ if ((e.position/e.duration) >= 0.8 && !suppressAuto.has(episodeId)) markComplete(episodeId, 'auto-80') })
+    //   • Vimeo:     use player.on('timeupdate', function(d){ if (d.percent >= 0.8 && !suppressAuto.has(episodeId)) markComplete(episodeId, 'auto-80') })
     //   • Native HTML5: the code below Just Works
-    //
-    // Grab the episode ID from the button so this file stays generic.
     // ============================================================
-    const episodeId = buttons[0].dataset.episodeId;
+    const primaryEpisodeId = buttons[0].dataset.episodeId;
     const AUTO_MARK_THRESHOLD = 0.8;
 
     function attachAutoMark(mediaEl) {
       if (!mediaEl) return;
       mediaEl.addEventListener('timeupdate', () => {
         if (!mediaEl.duration) return;
+        if (suppressAuto.has(primaryEpisodeId)) return;
         const pct = mediaEl.currentTime / mediaEl.duration;
-        if (pct >= AUTO_MARK_THRESHOLD) {
-          markComplete(episodeId, 'auto-80');
-        }
+        if (pct >= AUTO_MARK_THRESHOLD) markComplete(primaryEpisodeId, 'auto-80');
       });
     }
     document.querySelectorAll('video, audio').forEach(attachAutoMark);
