@@ -576,6 +576,27 @@
   }
   .btn-complete:hover { background: var(--ink); }
   .btn-complete svg { width: 14px; height: 14px; margin-right: 10px; vertical-align: -2px; }
+  .btn-complete.done,
+  .btn-complete.done:hover { background: #6B9A3E; color: #FFFFFF; cursor: default; }
+
+  /* Compact mark-complete button under the video player */
+  .mark-inline {
+    margin-top: 20px;
+    text-align: center;
+  }
+  .mark-inline .btn-complete {
+    padding: 12px 24px;
+    font-size: 12px;
+  }
+  .mark-inline .auto-note {
+    display: block;
+    margin-top: 10px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--paper);
+    opacity: 0.6;
+  }
 
   /* PREV/NEXT NAV */
   .step-nav {
@@ -756,6 +777,15 @@
         </button>
       </div>
     </div>
+
+    <!-- Compact Mark Complete button under the player -->
+    <div class="mark-inline">
+      <button type="button" class="btn-complete" data-mark-complete data-episode-id="day-7">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="5,12 10,17 19,7"/></svg>
+        Mark complete
+      </button>
+      <span class="auto-note">Or just watch — auto-marks at 80%</span>
+    </div>
   </div>
 </section>
 
@@ -850,7 +880,7 @@
 <!-- MARK COMPLETE -->
 <section class="mark-band">
   <p class="mark-copy">Finished today's ten minutes? <em>Mark it.</em></p>
-  <button class="btn-complete" onclick="this.innerHTML='✓&nbsp;&nbsp;MARKED COMPLETE'; this.style.background='var(--sage)'; this.style.color='var(--ink)'; this.disabled=true;">
+  <button type="button" class="btn-complete" data-mark-complete data-episode-id="day-7">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4,12 10,18 20,6"/></svg>
     I did today's episode
   </button>
@@ -893,6 +923,88 @@
       // In production: persist to localStorage: window.localStorage.setItem('td-format', mode)
     });
   });
+
+  // ============================================================
+  // MARK COMPLETE — shared state across all [data-mark-complete] buttons
+  // (one under the player + one at the bottom of the page)
+  // ============================================================
+  (function () {
+    const STORAGE_KEY = 'td-completed-episodes';
+    const buttons = document.querySelectorAll('[data-mark-complete]');
+    if (!buttons.length) return;
+
+    function getCompleted() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+      catch (e) { return {}; }
+    }
+    function saveCompleted(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function markComplete(episodeId, source) {
+      const data = getCompleted();
+      if (data[episodeId]) return; // already marked
+      data[episodeId] = { at: new Date().toISOString(), source: source || 'manual' };
+      saveCompleted(data);
+      updateButtons(episodeId);
+
+      // For Joe/OU dev: fire an analytics event so we can measure completion
+      // rates and which trigger (manual vs. auto-80%) is more common.
+      if (window.gtag) {
+        window.gtag('event', 'episode_completed', {
+          episode_id: episodeId,
+          trigger: source || 'manual'
+        });
+      }
+    }
+
+    function updateButtons(episodeId) {
+      buttons.forEach(btn => {
+        if (btn.dataset.episodeId === episodeId) {
+          btn.classList.add('done');
+          btn.disabled = true;
+          btn.innerHTML = '✓&nbsp;&nbsp;Completed';
+        }
+      });
+    }
+
+    // Wire click on all buttons
+    buttons.forEach(btn => {
+      const episodeId = btn.dataset.episodeId;
+      // Restore state on load
+      if (getCompleted()[episodeId]) updateButtons(episodeId);
+      btn.addEventListener('click', () => markComplete(episodeId, 'manual'));
+    });
+
+    // ============================================================
+    // AUTO-MARK at 80% playback
+    // ============================================================
+    // FOR OU DEV: this uses standard HTML5 <video>/<audio> events. The mockup
+    // doesn't have a real player, so this listens for whatever media element
+    // ends up in the .video-stage / .audio-stage containers when JW/Vimeo is wired.
+    //
+    // If the production player is:
+    //   • JW Player: use jwplayer(id).on('time', function(e){ ... e.position / e.duration ... })
+    //   • Vimeo:     use player.on('timeupdate', function(d){ ... d.percent >= 0.8 ... })
+    //   • Native HTML5: the code below Just Works
+    //
+    // Grab the episode ID from the button so this file stays generic.
+    // ============================================================
+    const episodeId = buttons[0].dataset.episodeId;
+    const AUTO_MARK_THRESHOLD = 0.8;
+
+    function attachAutoMark(mediaEl) {
+      if (!mediaEl) return;
+      mediaEl.addEventListener('timeupdate', () => {
+        if (!mediaEl.duration) return;
+        const pct = mediaEl.currentTime / mediaEl.duration;
+        if (pct >= AUTO_MARK_THRESHOLD) {
+          markComplete(episodeId, 'auto-80');
+        }
+      });
+    }
+    document.querySelectorAll('video, audio').forEach(attachAutoMark);
+  })();
 </script>
 
 </body>
